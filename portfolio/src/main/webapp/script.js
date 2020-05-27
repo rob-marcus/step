@@ -36,9 +36,16 @@ function addRandomGreeting() {
 function currPage() {
     var page = window.location.pathname;
     var pageName = page.substring(page.lastIndexOf('/') + 1);
-    alert(window.location.href)
+    return pageName;
 }
-
+/** this could be causing me some problems, not sure will come back to.
+function formatOtherPage(page) {
+  var pageName = str.slice(1, page.indexOf("."));
+  var pageName = pageName.toUpperCase(); //stylize
+  var pageLink = "<div><a href = \"" + page + "\"> " + pageName + "<\a>";
+  
+  return pageLink;
+} */
 /**
  * Returns a list of pages excluding the current page
  */
@@ -48,14 +55,19 @@ function otherPages(currPageIndex) {
                         "/glass.html",
                         "/projects.html",
                         "/about.html",
-                        "/contact.html"]
-  //if currPageIndex < 0 raise exception...?
+                        "/contact.html"];
+  //if currPageIndex < 0 should I raise exception as a good practice...?
   //if currPageIndex > len(indexedPages) 
   //I believe the method is safe and won't throw an error
   //just returns unaltered list, so that's fine(?)
-  var prePages  = indexedPages.slice(0, currPageIndex)
-  var postPages = indexedPages.slice(currPageIndex + 1, indexedPages.length)
-  var preAndPostPages = prePages.concat(postPages)
+  var prePages  = indexedPages.slice(0, currPageIndex);
+  var postPages = indexedPages.slice(currPageIndex + 1, indexedPages.length);
+  var preAndPostPages = prePages.concat(postPages);
   
-  return preAndPostPages 
+  //var pappHTMLFormatted = preAndPostPages.map(formatOtherPage);
+
+  const footer = document.getElementById("footer");
+  footer.innerHTML = preAndPostPages;
 }
+
+otherPages();

@@ -7,22 +7,29 @@
     <script src="script.js"></script>
   </head>
   <body>
-    <!div id="content">
-        <h1><a href="index.html" 
-   style="text-decoration: none; color: black">ROB MARCUS</a></h1>
-        <p>This is my portfolio.</p>
-        <p>Because I'm so new, I don't have much to say</p>
-        <p>So enjoy this image I took on a hike instead</p>
-        <p> test </p>
-        <div id="flex-container">
-            <div><img src="images/hiking_image.jpg"/></div> 
+    <h1>
+      <a href="index.html" style="text-decoration: none; color: black">
+        ROB MARCUS
+      </a>
+    </h1>
+    
+    <div id="content">    
+        <div id="container">
+            <div><img src="images/hiking_image.jpg"/></div>
             <div><img src="images/hiking_image.jpg"/></div>
             <div><img src="images/hiking_image.jpg"/></div>
         </div>
-        <p>Click here to get a random message:</p>
-        <button onclick="addRandomGreeting()">Hello</button>
-        <div id="greeting-container"></div>
-        <p>Come again, don't be a stranger!<p>
-    <!/div>
+    </div>
+
+    <div id = "content">
+        <div id="container">
+          <div onload="otherPages(0);" id="footer"></div>
+          <div>Test</div>
+        </div>
+        <div id="container">
+          <div>LinkedIn</div>
+          <div>GitHub</div>
+        </div>
+    </div>
   </body>
 </html>
