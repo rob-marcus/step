@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <title>My Portfolio</title>
     <link rel="stylesheet" href="style.css">
-    <script src="script.js"></script>
   </head>
   <body>
     <h1>
@@ -15,21 +14,69 @@
     
     <div id="content">    
         <div id="container">
-            <div><img src="images/hiking_image.jpg"/></div>
-            <div><img src="images/hiking_image.jpg"/></div>
-            <div><img src="images/hiking_image.jpg"/></div>
+            <div class = "containerBox"> 
+              <div class = "text-box">
+                <container-box-caption>
+                  HIKING
+                </container-box-caption>
+              </div>
+            
+              <a href = "/hiking.html">
+                  <img id = "myPicture">
+              </a>   
+            </div>     
+            <div class = "containerBox"> 
+              <div class = "text-box">
+                <container-box-caption>
+                  PROJECTS
+                </container-box-caption>
+              </div>
+            
+              <a href = "/projects.html">
+                  <img src = "images/projects_image.jpg">
+              </a>   
+            </div> 
+            <div class = "containerBox"> 
+              <div class = "text-box">
+                <container-box-caption>
+                  ME
+                </container-box-caption>
+              </div>
+            
+              <a href = "/me.html">
+                  <img src = "images/me_image.jpg">
+              </a>   
+            </div>
+            <div class = "containerBox"> 
+              <div class = "text-box">
+                <container-box-caption>
+                  HIKING
+                </container-box-caption>
+              </div>
+            
+              <a href = "/hiking.html">
+                  <img src = "images/hiking_image.jpg">
+              </a>   
+            </div> 
         </div>
     </div>
 
     <div id = "content">
         <div id="container">
-          <div onload="otherPages(0);" id="footer"></div>
-          <div>Test</div>
+          <p onload="otherPages(0);" id="footer"></p>
         </div>
         <div id="container">
-          <div>LinkedIn</div>
-          <div>GitHub</div>
+          <div class = logo>
+            <! not sure why but the LI logo had an unsightly _ wo td = none!>
+            <a href = "https://linkedin.com/in/robert-marcus-8b443b192" style = "text-decoration: none">
+              <img src = "images/linkedin_logo.png">
+            </a>
+            <a href = "https://github.com/rob-marcus">
+              <img src = "images/github_logo.png">
+            </a>
+          </div>
         </div>
     </div>
+  <script src="script.js"></script>
   </body>
 </html>

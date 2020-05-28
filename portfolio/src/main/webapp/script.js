@@ -27,47 +27,16 @@ function addRandomGreeting() {
   greetingContainer.innerText = greeting;
 }
 
-/**
- * Return the current page
- * Doesn't currently work on the maven generated page
- * But should take like www.../page.html
- * and return page.html
- */
-function currPage() {
-    var page = window.location.pathname;
-    var pageName = page.substring(page.lastIndexOf('/') + 1);
-    return pageName;
-}
-/** this could be causing me some problems, not sure will come back to.
-function formatOtherPage(page) {
-  var pageName = str.slice(1, page.indexOf("."));
-  var pageName = pageName.toUpperCase(); //stylize
-  var pageLink = "<div><a href = \"" + page + "\"> " + pageName + "<\a>";
-  
-  return pageLink;
-} */
-/**
- * Returns a list of pages excluding the current page
- */
-function otherPages(currPageIndex) {
-  const indexedPages = ["/index.html",
-                        "/hiking.html",
-                        "/glass.html",
-                        "/projects.html",
-                        "/about.html",
-                        "/contact.html"];
-  //if currPageIndex < 0 should I raise exception as a good practice...?
-  //if currPageIndex > len(indexedPages) 
-  //I believe the method is safe and won't throw an error
-  //just returns unaltered list, so that's fine(?)
-  var prePages  = indexedPages.slice(0, currPageIndex);
-  var postPages = indexedPages.slice(currPageIndex + 1, indexedPages.length);
-  var preAndPostPages = prePages.concat(postPages);
-  
-  //var pappHTMLFormatted = preAndPostPages.map(formatOtherPage);
+window.onload = randomPic();
 
-  const footer = document.getElementById("footer");
-  footer.innerHTML = preAndPostPages;
+function randomPic() {
+  var picOptions = new Array("images/hiking_image.jpg",
+                            "images/me_image.jpg",
+                            "images/travel_image.jpg",
+                            "images/projects_image.jpg");
+  randInd = Math.floor((Math.random() * picOptions.length));
+  document.getElementById("myPicture").src = picOptions[randInd];
+  console.log("Got through random pic")
 }
 
-otherPages();
+
