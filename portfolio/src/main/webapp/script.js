@@ -27,16 +27,36 @@ function addRandomGreeting() {
   greetingContainer.innerText = greeting;
 }
 
-window.onload = randomPic();
 
-function randomPic() {
-  var picOptions = new Array("images/hiking_image.jpg",
-                            "images/me_image.jpg",
-                            "images/travel_image.jpg",
-                            "images/projects_image.jpg");
+/** Load a random pic for a specific splash page icon
+ */
+function randomPic(filePrefix, numFiles, elId) {
+  console.log("For " + filePrefix + " elId is" + elId);
+  var picOptions = makeFileArray(filePrefix, numFiles); //create arr of options
+  console.log("picOptions are " + picOptions);
   randInd = Math.floor((Math.random() * picOptions.length));
-  document.getElementById("myPicture").src = picOptions[randInd];
-  console.log("Got through random pic")
+
+  document.getElementById(elId).src = picOptions[randInd];
+  console.log("for " + elId + " picked image " + picOptions[randInd]);
+  console.log("\n");
+  return true;
 }
 
+/** makes an array where arr[i] = filePrefix_i.jpeg
+ */
+function makeFileArray(filePrefix,numFiles) {
+  var arr = new Array(numFiles);
+  for(var i = 0; i < numFiles; i++) {
+    arr[i] = filePrefix + "_" + (i+1) + ".jpeg"; //files are 1-indexd
+  }
+  return arr;
+}
+/** Map a relevant randomPic to each splash page tiles
+ */
+function randomPics() {
+  const tiles = [["hiking",8],["me",9],["projects",12],["travel",8]];
+  const _     = tiles.map(x => randomPic("images/" + x[0] + "_images/"+x[0], x[1], x[0] + "RandPic"));
+}
+
+window.onload = randomPics();
 
