@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-const TILES = {"hiking":8, "me":9, "projects":12, "travel":8};
+const TILES = {"hiking":8, "me":9, "projects":14, "travel":8};
 
 
 /** 

@@ -9,20 +9,17 @@
       href="images/favicon.ico">
   </head>
   <body>
-    <h1>
-      <div id="header"></div>
-      <p> x ME</p>
-    </h1>
+    <div id="header"></div>
     
     <div class="content">
       <div id="tiles1"></div>
-      <p>Hi. I'm Robbie (also Rob). I'm a rising Junior at Carnegie Mellon.
-      When I'm not studying I spend most of my time playing squash or blowing
-      glass. Sadly I don't have (m)any photos of me doing those things 😭. 
-      Before coming to CMU, I spent most of my time wearing funny hats and 
-      hiking or trail running. Sadly pittsburgh isn't a hiking town, and 
-      I've traded in my funny hats for serious hats. I also went to highschool,
-      but we don't talk about that.</p>
+        <p>Hi. I'm Robbie (also Rob). I'm a rising Junior at Carnegie Mellon.
+        When I'm not studying, I spend most of my time playing squash or blowing
+        glass. Sadly I don't have (m)any photos of me doing those things 😭. 
+        Before coming to CMU, I spent most of my time wearing funny hats or 
+        hiking or trail running. Sadly pittsburgh isn't a hiking town, and 
+        I've traded in my funny hats for more serious ones. I also went to 
+        highschool, but I don't have much to say about that.</p>
       <div id="tiles2"></div>
         <p>I'm home right now in Connecticut. Normally when I'm home it's a holiday, 
         and my family celebrate's holidays by fostering seeing eye puppies for a 
@@ -45,10 +42,12 @@
 
     <div id="footer"></div>
   <script src="repeatedElements.js"></script>  
-  <script type = "text/javascript">
-    const TILES = {"tiles1":[7,4],"tiles2":[6,5],"tiles3":[3,2],"tiles4":[1,8]};
+  <script type="text/javascript">
+    const TILES = {"tiles1":[7,4],"tiles2":[6,5],"tiles3":[3,2],"tiles4":[1,9,8]};
     const PREFIX = "me";
-    allTwoTiles(PREFIX, TILES);
+
+    allTileBoxs(PREFIX, TILES);
+    header("ME");
   </script>
   </body>
 </html>

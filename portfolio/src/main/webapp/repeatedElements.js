@@ -18,44 +18,55 @@ const LOGOHTML = "<div class='content'> \
                     <div class='container'> \
                       <div class='logo'> \
                         <a href= \
-                          'https://linkedin.com/in/robert-marcus-8b443b192'> \
+                          'https://linkedin.com/in/robert-marcus-8b443b192'\
+                          target='_blank'> \
                           <img src='images/linkedin_logo.png'> \
                         </a>\
-                        <a href='https://github.com/rob-marcus'> \
+                        <a href='https://github.com/rob-marcus'\
+                          target='_blank'> \
                           <img src='images/github_logo.png'>\
                         </a>\
                       </div>\
                     </div>\
                   </div>";
-
-const TILESHTML1 = "<div class='container'>\
-                      <div class='container-box'>\
-                        <div class='tile'>\
-                          <img src=";
-const TILESHTML2 = "                >\
-                        </div>\
-                      </div>\
-                      <div class='container-box'>\
-                        <div class='tile'>\
-                          <img src=";
-const TILESHTML3 = "    </div>\
-                      </div>\
-                    </div>";
-
-const HEADER = "<a href='index.html'> ROB MARCUS </a>";
-
-
+                  
 /**
  * Generate logos at the foot of a doc
  */
 function logos() {
   document.getElementById("footer").innerHTML = LOGOHTML;
 }
+
 /**
  * Generate header at top of doc
  */
-function header() {
-  document.getElementById("header").innerHTML = HEADER;
+function header(inpString) {
+  var basicHeader = "<h1><a href='index.html'> ROB MARCUS </a>";
+
+  if(inpString !== undefined) {
+    basicHeader += `<p> x ${inpString} </p>`
+  }
+  
+  document.getElementById("header").innerHTML = basicHeader + "</h1>";
+
+}
+
+/**
+ * generate the HTML for an img at path imgPath
+ */
+function generateTile(imgPath) {
+  const reduceString = (accum, currString) => accum + currString;
+
+  var tileHTML = ["<div class='container-box'>\
+                      <div class='tile'>\
+                        <img src=",
+                  imgPath,
+                  "     >\
+                      </div>\
+                    </div>\
+                  "];
+
+  return tileHTML.reduce(reduceString);
 }
 
 /**
@@ -70,25 +81,24 @@ function generateImgPath(imgPrefix, tileIndex) {
  * Prefix is some x \in [me, projects, travel, hiking]
  * i.e., twoTiles("me", 1, 2, "tiles1");
  */
-function twoTiles(imgPrefix, tile1Index, tile2Index, elId) {
-  var tile1Path = generateImgPath(imgPrefix, tile1Index);
-  var tile2Path = generateImgPath(imgPrefix, tile2Index);
-  //combine html
-  var twoTilesHTML = TILESHTML1 + tile1Path + TILESHTML2 + tile2Path + TILESHTML3;
-  console.log(twoTilesHTML);
-  console.log(tile1Path, tile2Path)
-  document.getElementById(elId).innerHTML = twoTilesHTML;
+function nTiles(imgPrefix, tileIndexs, elId) {
+  var tilesHTML = "<div class='container'>";
+  for (var i = 0; i < tileIndexs.length; i++) {
+    tileIPath = generateImgPath(imgPrefix, tileIndexs[i]); //1-indexd
+    tilesHTML += generateTile(tileIPath); 
+  }
+  tilesHTML += "</div>";
+  document.getElementById(elId).innerHTML = tilesHTML;
 }
 
 /**
- * Generate a flexbox for every set of two tiles
+ * Generate a flexbox for every set of tiles
  */
-function allTwoTiles(prefix, tilesJSON) {
+function allTileBoxs(prefix, tilesJSON) {
   for (x in TILES) {
-    twoTiles(prefix, TILES[x][0], TILES[x][1], x);
+    nTiles(prefix, TILES[x], x);
   }
 }
 
 
 window.onload = logos();
-window.onload = header();
