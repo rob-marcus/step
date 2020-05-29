@@ -3,22 +3,7 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
-img {
-  max-height: 60vh;
-  width: auto; 
-  border-radius: 15%;
-  opacity: .9;
-  transition-timing-function: ease-in-out;
-  transition: 250ms;
-  padding: 1vh;
-}
-
-.logo img {
-    max-height: 6vh;
-    width: auto;
-}
-
-#content {
+.content {
   margin-left: auto;
   margin-right: auto;
   width: 67.5vw;
@@ -36,15 +21,22 @@ h1 {
   font-weight: bold;
 }
 
-h1 > div {
+h1 > p {
   font-size: 8vh; 
   color: navy;
+  margin: 0;
+}
+
+h1 > div > a { 
+  text-decoration: none;
+  color: black;
 }
 
 p {
   font-size: 5vh;
 }
-#container {
+
+.container {
   text-align: justify;
   justify-content: space-evenly;
   display: flex;
@@ -52,7 +44,7 @@ p {
   flex-direction: row;
 }
 
-#container > div {
+.container > div {
   display: inline-block;
   vertical-align: top;  
 }
@@ -66,7 +58,7 @@ p {
   font-size: 6.5vh;
 }
 
-.containerBox {
+.container-box {
   position: relative;
   display: inline-block;
   vertical-align: top;
@@ -77,7 +69,7 @@ p {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  user-select: none;
+  pointer-events: none;
 }
 
 .text-box:before { 
@@ -86,13 +78,36 @@ p {
   vertical-align: middle;
 }
 
-container-box-caption {
+.text-box > div {
   display: inline-block;
   font-size: 6.5vh;
   color: white;
   font-weight: bold;
 }
 
-img:hover { 
+.tile img {
+  max-height: 60vh;
+  width: auto; 
+  border-radius: 15%;
+  padding: 2.5vh;
+}
+
+.tile > .interactive-tile img {
+  opacity: .9;
+  transition-timing-function: ease-in-out;
+  transition: 250ms;
+}
+
+.tile > .interactive-tile img:hover { 
   opacity: 1;
+}
+
+.logo img {
+  max-height: 6vh;
+  width: auto;
+}
+
+.logo > a {
+  text-decoration: none;
+  color: black;
 }

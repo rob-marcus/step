@@ -4,79 +4,84 @@
     <meta charset="UTF-8">
     <title>ROB MARCUS</title>
     <link rel="stylesheet" href="style.css">
+    <!-- wrote a js function for favicon but not executing in head<head> -->
+    <link rel="icon" 
+      type="image/ico" 
+      href="images/favicon.ico">
   </head>
   <body>
     <h1>
-      <a href="index.html" style="text-decoration: none; color: black">
-        ROB MARCUS
-      </a>
+      <div id="header"></div>
     </h1>
-    
-    <div id="content">    
-        <div id="container">
-            <div class = "containerBox"> 
-              <div class = "text-box">
-                <container-box-caption>
-                  TRAVEL
-                </container-box-caption>
-              </div>
-            
-              <a href = "/travel.html">
-                  <img id = "travelRandPic">
-              </a>   
-            </div>     
-            <div class = "containerBox"> 
-              <div class = "text-box">
-                <container-box-caption>
-                  PROJECTS
-                </container-box-caption>
-              </div>
-            
-              <a href = "/projects.html">
-                  <img id = "projectsRandPic">
-              </a>   
-            </div> 
-            <div class = "containerBox"> 
-              <div class = "text-box">
-                <container-box-caption>
-                  ME
-                </container-box-caption>
-              </div>
-            
-              <a href = "/me.html">
-                  <img id = "meRandPic">
-              </a>   
+
+    <div class="content">    
+      <div class="container">
+
+        <div class="container-box"> 
+          <div class="text-box">
+            <div>
+              TRAVEL
             </div>
-            <div class = "containerBox"> 
-              <div class = "text-box">
-                <container-box-caption>
-                  HIKING
-                </container-box-caption>
-              </div>
-            
-              <a href = "/hiking.html">
-                  <img id = "hikingRandPic">
-              </a>   
-            </div> 
+          </div>
+          <div class="tile">
+            <div class="interactive-tile">
+              <a href="travel.html">
+                  <img id="travel-rand-pic">
+              </a>
+            </div>
+          </div>
+        </div>  
+
+        <div class="container-box"> 
+          <div class="text-box">
+            <div>
+              PROJECTS
+            </div>
+          </div>
+          <div class="tile">
+            <div class="interactive-tile">
+              <a href="projects.html">
+                  <img id="projects-rand-pic">
+              </a>
+            </div>   
+          </div>
+        </div> 
+
+        <div class="container-box"> 
+          <div class="text-box">
+            <div>
+              ME
+            </div>
+          </div>
+          <div class="tile">
+            <div class="interactive-tile">
+              <a href="me.html">
+                  <img id="me-rand-pic">
+              </a>
+            </div>
+          </div>   
         </div>
+
+        <div class="container-box"> 
+          <div class="text-box">
+            <div>
+              HIKING
+            </div>
+          </div>
+          <div class="tile">
+            <div class="interactive-tile">
+              <a href="hiking.html">
+                  <img id="hiking-rand-pic">
+              </a>  
+            </div>
+          </div> 
+        </div> 
+
+      </div>
     </div>
 
-    <div id = "content">
-        <div id="container">
-          <p onload="otherPages(0);" id="footer"></p>
-        </div>
-        <div id="container">
-          <div class = logo>
-            <! not sure why but the LI logo had an unsightly _ wo td = none!>
-            <a href = "https://linkedin.com/in/robert-marcus-8b443b192" style = "text-decoration: none">
-              <img src = "images/linkedin_logo.png">
-            </a>
-            <a href = "https://github.com/rob-marcus">
-              <img src = "images/github_logo.png">
-            </a>
-          </div>
-        </div>
-    </div>
-  <script src="script.js"></script>
+    <div id="footer"></div>
+  <script src="splashPage.js"></script>
+  <script src="repeatedElements.js"></script>
   </body>
 </html>
