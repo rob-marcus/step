@@ -41,7 +41,7 @@ function makeFileArray(filePrefix,numFiles) {
  */
 function randomPics() {
   for (tileName in TILES) {
-    var filePrefix = "images/" + tileName + "_images/" + tileName;
+    var filePrefix = `images/${tileName}_images/${tileName}`;
     var numFiles = TILES[tileName];
     var elId = tileName + "-rand-pic";
     randomPic(filePrefix, numFiles, elId);
