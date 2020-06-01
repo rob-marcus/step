@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>ROB MARCUS x HIKING</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" 
+      type="image/ico" 
+      href="images/favicon.ico">
+  </head>
+  <body>
+    <div id="header"></div>
+    <div class = "content">
+      <div id="tiles1"></div>
+        <p><a href="http://blissbat.net/balzac.html" target="_blank">Hiking is a 
+        great power in my life; I have observed its effects on an epic scale. 
+        Hiking transforms you. Many people claim hiking inspires them, but, 
+        as everybody knows, hiking only makes boring people even more
+        boring. Think about it: although their are more hiking trails now than
+        ever, few people are actually becoming more spiritual.</a>  
+      <div id="tiles2"></div>
+        <p>I've been hiking forever, and I want to go hiking everywhere. 
+        I started hiking in Colorado when I'd go to visit my grandparents in
+        Colorado every summer. I started trail running and climbing 14ers when 
+        I was a teen. </p>
+      <div id="tiles3"></div>
+        <p>I went back to Colorado last summer to attempt the Colorado trail, 
+        a 500 mile circuit from Denver to Durango. I was going to do it alone, 
+        and had an ambitious goal to complete it in less than a month. 
+        Unfortunatley, I fell off trail on day 1 while trying to get off a 
+        ridgeline during a thunderstorm, twisting my ankle and breaking my foot.
+        On the left is me at the start of the trail. On the right is a resigned 
+        selfie after 20 miles of pains and pleasures.</p>
+    </div>
+    <div id="footer"></div>
+  <script src="repeatedElements.js"></script>
+  <script type="text/javascript">
+    const TILES = {"tiles1":[1,2,0],"tiles2":[6,5,3],"tiles3":[7,4]};
+    const PREFIX = "hiking";
+
+    generateAllTiles(PREFIX, TILES);
+    header(PREFIX);
+  </script>
+  </body>
+</html>

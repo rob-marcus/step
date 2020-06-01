@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>ROB MARCUS x PROJECTS</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" 
+      type="image/ico" 
+      href="images/favicon.ico">
+  </head>
+  <body>
+    <div id="header"></div>
+    <div class="content">
+      <div id="tiles1"></div>
+        <p>I've worked on two major projects. In high school I researched and 
+        designed medical exoskeletons (you can read more about it 
+        <a href=http://awstrol.com target="_blank">here</a>). My freshman year I studied generating
+        3D models of art from regular images using computer vision. I called my 
+        program Paint By Number. I'm still deeply interested in both, and look 
+        forward to working on them more
+        in the future.  Painting source: Van Gogh.</p>
+      <div id="tiles2"></div>
+        <p>The basic idea with Paint By Number was to segment each image by 
+        distinct brushstrokes, and then apply a filter to each brushstroke
+        mapping relative pixel energy to grayscale, in turn giving a pseudo-3D
+        representation. Below are some examples of images and their corresponding 
+        depth map. This is still a work in progress! Painting source: Van Gogh.
+        </p>
+      <div id="tiles3"></div> 
+        <p>Painting source: Van Gogh.</p>
+      <div id="tiles4"></div>
+        <p>Painting source: Picard.</p>
+      <div id="tiles5"></div>
+        <p>Painting source: Delauney.</p>
+      <div id="tiles6"></div>
+        <p>Painting source: Bob Dylan (aka the 🐐.)</p>
+    </div>
+
+    <div id="footer"></div>
+  <script src="repeatedElements.js"></script>
+  <script type = "text/javascript">
+    const TILES = {"tiles1":[1,0,2],"tiles2":[3,4],"tiles3":[5,6],
+                   "tiles4":[7,8],"tiles5":[9,10],"tiles6":[11,12]};
+    const PREFIX = "projects";
+    
+    generateAllTiles(PREFIX, TILES);
+    header(PREFIX);
+  </script>
+  </body>
+</html>

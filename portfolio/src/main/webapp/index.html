@@ -2,17 +2,21 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>My Portfolio</title>
+    <title>ROB MARCUS</title>
     <link rel="stylesheet" href="style.css">
-    <script src="script.js"></script>
+    <!-- wrote a js function for favicon but not executing in head<head> -->
+    <link rel="icon" 
+      type="image/ico" 
+      href="images/favicon.ico">
   </head>
   <body>
-    <div id="content">
-      <h1>My Portfolio</h1>
-      <p>This is my portfolio.</p>
-      <p>Click here to get a random message:</p>
-      <button onclick="addRandomGreeting()">Hello</button>
-      <div id="greeting-container"></div>
-    </div>
+    <div id="header"></div>
+    <div id="splash-tiles"></div>
+    <div id="footer"></div>
+  <script src="splashPage.js"></script>
+  <script src="repeatedElements.js"></script>
+  <script type="text/javascript">
+    header();
+  </script>
   </body>
 </html>

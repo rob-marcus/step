@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>ROB MARCUS x TRAVEL</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" 
+      type="image/ico" 
+      href="images/favicon.ico">
+  </head>
+
+  <body>
+    <div id="header"></div>
+    <div class="content">
+      <div id="tiles1"></div>
+        <p>I love to travel, and I really love to travel to desolate places.
+        My dream vacation is to go visit the 
+        <a href="https://en.wikipedia.org/wiki/Tibesti_Mountains" 
+        target="_blank"> Tibesti Mountain range</a> in Northern Chad. I've been 
+        fascinated by Tibesti ever since I read about it in Dino Buzatti's  
+        <i>The Walls of Anagoor</i>. It's a mountain range that almost nobody has
+        visited, even scientists and anthropologists who would love to do 
+        research there. That's why most of the photos you'll see of it are from 
+        space, and not the ground. How many places the size of Germany can you 
+        say that about?</p>
+      <div id="tiles2"></div>
+        <p>Besides Chad, I've been fortunate enough to visit some other places
+        I've always wanted to visit. On my gap year I lived in Alaska for 
+        seven months, working on commercial salmon boats to get me by. I also 
+        lived in Colombia for several months, working as an English teacher by
+        day and driving around the city on a cheap motorcycle in my birks by 
+        night. I also travelled up the Mekong river system over three months 
+        as a student on a cultural immersion trip, which was more exotic but 
+        a lot less dangerous.</p>
+      <div id="tiles3"></div>
+    </div>
+
+    <div id="footer"></div>
+
+  <script src="repeatedElements.js"></script>
+  <script type = "text/javascript">
+    const TILES = {"tiles1":[2,4,0],"tiles2":[3,6,1],"tiles3":[5,7]};
+    const PREFIX = "travel";
+
+    generateAllTiles(PREFIX, TILES);
+    header(PREFIX);
+  </script>
+  </body>
+</html>

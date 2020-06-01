@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>ROB MARCUS x ME</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" 
+      type="image/ico" 
+      href="images/favicon.ico">
+  </head>
+  <body>
+    <div id="header"></div>
+    
+    <div class="content">
+      <div id="tiles1"></div>
+        <p>Hi. I'm Robbie (also Rob). I'm a rising Junior at Carnegie Mellon.
+        When I'm not studying, I spend most of my time playing squash or blowing
+        glass. Sadly I don't have (m)any photos of me doing those things 😭. 
+        Before coming to CMU, I spent most of my time wearing funny hats or 
+        hiking or trail running. Sadly pittsburgh isn't a hiking town, and 
+        I've traded in my funny hats for more serious ones. I also went to 
+        highschool, but I don't have much to say about that.</p>
+      <div id="tiles2"></div>
+        <p>I'm home right now in Connecticut. Normally when I'm home it's a holiday, 
+        and my family celebrate's holidays by fostering seeing eye puppies for a 
+        week. Sadly WFH/social isolation is not a holiday.</p>
+      <div id="tiles3"></div>
+        <p>Everybody has a definitive moment in their life. I've had a few. 
+        The most important for me was taking a gap year. I spent most of the 
+        time working. Still, I had some incredible moments, went almost everywhere 
+        you can go. One notable accomplishment that I'll (hopefully) never repeat: 
+        I wore the same outfit for a month and change without showering/washing! 
+        On the left is me smiling and thinking I have a great, clean, pleasant 
+        smelling future. On the right is me smiling because it was almost time to 
+        leave the fishing boats and go back to civilization!</p> 
+      <div id="tiles4"></div>
+        <p>Taking a gap year didn't just change my outlooks, perspective, and 
+          tolerance level for unpleasant things. It also changed how I dress 
+          (jury is still out on whether this is a good or bad thing...). 
+        </p>
+    </div>
+
+    <div id="footer"></div>
+  <script src="repeatedElements.js"></script>  
+  <script type="text/javascript">
+    const TILES = {"tiles1":[7,4],"tiles2":[6,5],"tiles3":[3,2],"tiles4":[1,0,8]};
+    const PREFIX = "me";
+
+    generateAllTiles(PREFIX, TILES);
+    header(PREFIX);
+  </script>
+  </body>
+</html>
