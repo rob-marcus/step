@@ -6,8 +6,8 @@ body {
 .content {
   margin-left: auto;
   margin-right: auto;
-  width: 75vw;
-  padding: 3vh;
+  width: 85vw;
+  padding: 1vh;
 }
 
 .content > .splash-content {
@@ -75,6 +75,10 @@ p {
   left: 50%;
   transform: translate(-50%, -50%);
   pointer-events: none;
+  display: inline-block;
+  font-size: 6.5vh;
+  color: white;
+  font-weight: bold;
 }
 
 .text-box:before { 
@@ -83,12 +87,6 @@ p {
   vertical-align: middle;
 }
 
-.text-box > div {
-  display: inline-block;
-  font-size: 6.5vh;
-  color: white;
-  font-weight: bold;
-}
 
 .tile img {
   height: 60vh;

@@ -12,62 +12,92 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// TODO: rewrite header/footer to use insertBefore and insertAfter
+// TODO: so I don't have to call footer and header in each new page...
+// TODO: will come back to later; a little too much rn
 
-//will build out a generic function to generate this string in future
-const LOGOHTML = "<div class='content'> \
-                    <div class='container'> \
-                      <div class='logo'> \
-                        <a href= \
-                          'https://linkedin.com/in/robert-marcus-8b443b192'\
-                          target='_blank'> \
-                          <img src='images/linkedin_logo.png'> \
-                        </a>\
-                        <a href='https://github.com/rob-marcus'\
-                          target='_blank'> \
-                          <img src='images/github_logo.png'>\
-                        </a>\
-                      </div>\
-                    </div>\
-                  </div>";
-                  
+
+// FOOTER AND HEADER CONSTANTS
+const LINKEDINDEST = "https://linkedin.com/in/robert-marcus-8b443b192";
+const LINKEDINIMGSRC = "images/linkedin_logo.png";
+
+const GITHUBDEST = "https://github.com/rob-marcus";
+const GITHUBIMGSRC = "images/github_logo.png";
+
+const LOGOSLIST = {"linkedin": {"dest": LINKEDINDEST, "src": LINKEDINIMGSRC},
+              "github" : {"dest": GITHUBDEST, "src": GITHUBIMGSRC}};
+const HEADERTITLE = "ROB MARCUS";
+
+
 /**
- * Generate logos at the foot of a doc
+ * fot a given logo, create the requisite html objects
+ */
+function generateLogo(logoInfo) {
+  logoLink = document.createElement("a");
+  logoImg = document.createElement("img");
+
+  logoLink.href = logoInfo.dest;
+  logoImg.src = logoInfo.src;
+
+  logoLink.appendChild(logoImg);
+  
+  return logoLink
+}
+
+/**
+ * Generate all logos as JS objects
  */
 function logos() {
-  document.getElementById("footer").innerHTML = LOGOHTML;
+  var contentDiv = document.createElement("div");
+  var containerDiv = document.createElement("div");
+  var logoDiv = document.createElement("div");
+
+  contentDiv.className = "content";
+  containerDiv.className = "container";
+  logoDiv.className = "logo";
+
+  containerDiv.appendChild(logoDiv);
+  contentDiv.appendChild(containerDiv);
+
+  for (logo in LOGOSLIST) {
+    logoDiv.appendChild(generateLogo(LOGOSLIST[logo]));
+  }
+
+  document.getElementById("footer").appendChild(contentDiv);
+}
+
+
+/**
+ * If subTitle is the empty string keep it
+ * Else format as "x CAPS(subTitle)"
+ */
+function formatSubtitle(subTitle) { 
+  return (subTitle === "" ? "" : `x ${subTitle.toUpperCase()}`);
 }
 
 /**
  * Generate header at top of doc
+ * This time with objs instead of basic strings
  */
-function header(inpString) {
-  var basicHeader = "<h1><a href='index.html'> ROB MARCUS </a>";
+function header(subTitle = "") { 
+  var headerDiv = document.createElement("h1");
+  var headerLinkDiv = document.createElement("a");
+  var subTitleDiv = document.createElement("p");
 
-  if(inpString !== undefined) {
-    basicHeader += `<p> x ${inpString} </p>`
-  }
+  headerLinkDiv.href = "index.html";
   
-  document.getElementById("header").innerHTML = basicHeader + "</h1>";
+  var headerTitle = document.createTextNode(HEADERTITLE);
+  var subTitle = document.createTextNode(formatSubtitle(subTitle));
+  
+  subTitleDiv.appendChild(subTitle);
+  headerLinkDiv.appendChild(headerTitle);
 
+  headerDiv.appendChild(headerLinkDiv);
+  headerDiv.appendChild(subTitleDiv);
+
+  document.getElementById("header").appendChild(headerDiv);
 }
 
-/**
- * generate the HTML for an img at path imgPath
- */
-function generateTile(imgPath) {
-  const reduceString = (accum, currString) => accum + currString;
-
-  var tileHTML = ["<div class='container-box'>\
-                      <div class='tile'>\
-                        <img src=",
-                  imgPath,
-                  "     >\
-                      </div>\
-                    </div>\
-                  "];
-
-  return tileHTML.reduce(reduceString);
-}
 
 /**
  * Generate file path for some imgPrefix_i at index i in imgPrefix_images
@@ -76,19 +106,40 @@ function generateImgPath(imgPrefix, tileIndex) {
   return `images/${imgPrefix}_images/${imgPrefix}_${tileIndex}.jpeg`;
 }
 
+
+/**
+ * generate the HTML for an img at path imgPath
+ */
+function generateTile(tilePath) {
+  var containerBoxDiv = document.createElement("div");
+  var tileDiv = document.createElement("div");
+  var imgDiv = document.createElement("img");
+
+  containerBoxDiv.classname = "container-box";
+  tileDiv.className = "tile"
+  imgDiv.src = tilePath;
+
+  tileDiv.appendChild(imgDiv);
+  containerBoxDiv.appendChild(tileDiv);
+  
+  return containerBoxDiv;
+}
+
+
 /**
  * Generate a flexbox with two image-populated tiles in it
  * Prefix is some x \in [me, projects, travel, hiking]
  * i.e., twoTiles("me", 1, 2, "tiles1");
  */
 function nTiles(imgPrefix, tileIndexs, elId) {
-  var tilesHTML = "<div class='container'>";
+  var tilesDiv = document.createElement("div");
+  tilesDiv.className = "container";
+
   for (var i = 0; i < tileIndexs.length; i++) {
     tileIPath = generateImgPath(imgPrefix, tileIndexs[i]); //1-indexd
-    tilesHTML += generateTile(tileIPath); 
+    tilesDiv.appendChild(generateTile(tileIPath));
   }
-  tilesHTML += "</div>";
-  document.getElementById(elId).innerHTML = tilesHTML;
+  document.getElementById(elId).appendChild(tilesDiv);
 }
 
 /**
@@ -101,4 +152,13 @@ function allTileBoxs(prefix, tilesJSON) {
 }
 
 
+
+
+
+
+
+
+
+
 window.onload = logos();
+//logos();

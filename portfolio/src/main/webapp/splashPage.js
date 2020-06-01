@@ -12,41 +12,77 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-const TILES = {"hiking":8, "me":9, "projects":14, "travel":8};
+const TILES = {"travel": 8, "projects": 14, "me": 9, "hiking": 8};
 
-
-/** 
- * Load a random pic for a specific splash page icon
+/**
+ * return a random img with index i from the proper subdirectory
  */
-function randomPic(filePrefix, numFiles, elId) {
-  var picOptions = makeFileArray(filePrefix, numFiles); //create arr of options
-  randInd = Math.floor((Math.random() * picOptions.length));
+function randomImg(tileName) {
+  var randInd = Math.floor((Math.random() * TILES[tileName]));
+  var path = `images/${tileName}_images/${tileName}_${randInd+1}.jpeg`;
 
-  document.getElementById(elId).src = picOptions[randInd];
+  return path;
 }
 
-/** 
- * makes an array where arr[i] = filePrefix_i.jpeg
+/**
+ * For a given tileName, generate all the requisite elements
+ * There is probably a more CLEAR way to write all of this...
+ * so much appending ahhhhh
  */
-function makeFileArray(filePrefix,numFiles) {
-  var arr = new Array(numFiles);
-  for(var i = 0; i < numFiles; i++) {
-    arr[i] = filePrefix + "_" + (i+1) + ".jpeg"; //files are 1-indexd
+function generateInteractiveTile(tileName) {
+  var containerBoxDiv = document.createElement("div");
+  var textBoxDiv = document.createElement("div");
+  
+  containerBoxDiv.className = "container-box";
+  textBoxDiv.className = "text-box";
+  
+  var textBoxText = document.createTextNode(tileName.toUpperCase());
+  textBoxDiv.appendChild(textBoxText);
+
+  var tileDiv = document.createElement("div");
+  var interactiveTileDiv = document.createElement("div");
+  var pageLinkDiv = document.createElement("a");
+  var randImgDiv = document.createElement("img");
+
+  tileDiv.className = "tile";
+  interactiveTileDiv.className = "interactive-tile";
+  
+  pageLinkDiv.href = `${tileName}.html`;
+  randImgDiv.src = randomImg(tileName);
+
+  pageLinkDiv.appendChild(randImgDiv);
+  
+  interactiveTileDiv.appendChild(textBoxDiv);
+  interactiveTileDiv.appendChild(pageLinkDiv);
+
+  tileDiv.appendChild(interactiveTileDiv);
+  containerBoxDiv.appendChild(tileDiv);
+
+  return containerBoxDiv;
+}
+
+/**
+ * for every tile key in TILES, generate an interactive and random tile
+ */
+function interactiveTiles() {
+  var contentDiv = document.createElement("div");
+  var splashContentDiv = document.createElement("div");
+  var containerDiv = document.createElement("div");
+  
+  contentDiv.className = "content";
+  splashContentDiv.className = "splash-content";
+  containerDiv.className = "container";
+
+  contentDiv.appendChild(splashContentDiv);
+  splashContentDiv.appendChild(containerDiv);
+
+  for (var tile in TILES) {
+    var containerBoxDiv = generateInteractiveTile(tile);
+    containerDiv.appendChild(containerBoxDiv);
   }
-  return arr;
-}
-
-/** 
- * Map a relevant randomPic to each splash page tiles
- */
-function randomPics() {
-  for (tileName in TILES) {
-    var filePrefix = `images/${tileName}_images/${tileName}`;
-    var numFiles = TILES[tileName];
-    var elId = tileName + "-rand-pic";
-    randomPic(filePrefix, numFiles, elId);
-  }
+  document.getElementById("splash-tiles").appendChild(contentDiv);
 }
 
 
-window.onload = randomPics();
+interactiveTiles();
+
