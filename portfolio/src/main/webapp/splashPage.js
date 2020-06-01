@@ -19,7 +19,7 @@ const TILES = {"travel": 8, "projects": 14, "me": 9, "hiking": 8};
  */
 function randomImg(tileName) {
   var randInd = Math.floor((Math.random() * TILES[tileName]));
-  var path = `images/${tileName}_images/${tileName}_${randInd+1}.jpeg`;
+  var path = `images/${tileName}_images/${tileName}_${randInd}.jpeg`;
 
   return path;
 }

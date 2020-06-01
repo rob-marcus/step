@@ -16,21 +16,19 @@
 // TODO: so I don't have to call footer and header in each new page...
 // TODO: will come back to later; a little too much rn
 
+const LOGOS = {"linkedin": 
+                    {"dest": "https://linkedin.com/in/robert-marcus-8b443b192",
+                     "src": "images/linkedin_logo.png"},
+                "github": 
+                    {"dest": "https://github.com/rob-marcus",
+                     "src": "images/github_logo.png"}
+                  };
 
-// FOOTER AND HEADER CONSTANTS
-const LINKEDINDEST = "https://linkedin.com/in/robert-marcus-8b443b192";
-const LINKEDINIMGSRC = "images/linkedin_logo.png";
-
-const GITHUBDEST = "https://github.com/rob-marcus";
-const GITHUBIMGSRC = "images/github_logo.png";
-
-const LOGOSLIST = {"linkedin": {"dest": LINKEDINDEST, "src": LINKEDINIMGSRC},
-              "github" : {"dest": GITHUBDEST, "src": GITHUBIMGSRC}};
-const HEADERTITLE = "ROB MARCUS";
+const HEADER_TITLE = "ROB MARCUS";
 
 
 /**
- * fot a given logo, create the requisite html objects
+ * For a given logo, create the requisite html objects
  */
 function generateLogo(logoInfo) {
   logoLink = document.createElement("a");
@@ -47,7 +45,7 @@ function generateLogo(logoInfo) {
 /**
  * Generate all logos as JS objects
  */
-function logos() {
+function generateLogos() {
   var contentDiv = document.createElement("div");
   var containerDiv = document.createElement("div");
   var logoDiv = document.createElement("div");
@@ -59,8 +57,8 @@ function logos() {
   containerDiv.appendChild(logoDiv);
   contentDiv.appendChild(containerDiv);
 
-  for (logo in LOGOSLIST) {
-    logoDiv.appendChild(generateLogo(LOGOSLIST[logo]));
+  for (logo in LOGOS) {
+    logoDiv.appendChild(generateLogo(LOGOS[logo]));
   }
 
   document.getElementById("footer").appendChild(contentDiv);
@@ -86,7 +84,7 @@ function header(subTitle = "") {
 
   headerLinkDiv.href = "index.html";
   
-  var headerTitle = document.createTextNode(HEADERTITLE);
+  var headerTitle = document.createTextNode(HEADER_TITLE);
   var subTitle = document.createTextNode(formatSubtitle(subTitle));
   
   subTitleDiv.appendChild(subTitle);
@@ -127,16 +125,17 @@ function generateTile(tilePath) {
 
 
 /**
- * Generate a flexbox with two image-populated tiles in it
+ * Generate a flexbox with arbitarily many 
+ * image-populated tiles in it
  * Prefix is some x \in [me, projects, travel, hiking]
  * i.e., twoTiles("me", 1, 2, "tiles1");
  */
-function nTiles(imgPrefix, tileIndexs, elId) {
-  var tilesDiv = document.createElement("div");
+function generateTiles(imgPrefix, tileIndexs, elId) {
+  const tilesDiv = document.createElement("div");
   tilesDiv.className = "container";
 
   for (var i = 0; i < tileIndexs.length; i++) {
-    tileIPath = generateImgPath(imgPrefix, tileIndexs[i]); //1-indexd
+    const tileIPath = generateImgPath(imgPrefix, tileIndexs[i]); 
     tilesDiv.appendChild(generateTile(tileIPath));
   }
   document.getElementById(elId).appendChild(tilesDiv);
@@ -145,20 +144,10 @@ function nTiles(imgPrefix, tileIndexs, elId) {
 /**
  * Generate a flexbox for every set of tiles
  */
-function allTileBoxs(prefix, tilesJSON) {
+function generateAllTiles(prefix, tilesJSON) {
   for (x in TILES) {
-    nTiles(prefix, TILES[x], x);
+    generateTiles(prefix, tilesJSON[x], x);
   }
 }
 
-
-
-
-
-
-
-
-
-
-window.onload = logos();
-//logos();
+window.onload = generateLogos();
