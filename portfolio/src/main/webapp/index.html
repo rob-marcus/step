@@ -11,8 +11,13 @@
   </head>
   <body>
     <div id="header"></div>
-    <div id="message-container"></div>
     <div id="splash-tiles"></div>
+    <form action="/data" method="POST">
+      <label for="comment">Leave a comment!</label><br>
+      <input type="text" id="comment" name="comment"></input><br> 
+      <input type="submit" id="submit"></input>
+    </form>
+    <div id="message-container"></div>
     <div id="footer"></div>
   <script src="splashPage.js"></script>
   <script src="repeatedElements.js"></script>
