@@ -86,3 +86,16 @@ function interactiveTiles() {
 
 interactiveTiles();
 
+
+
+/**
+ * Week 3 dev stuff
+ * Using fetch request content from servlet and add to home page
+ */
+function addMessage() {
+  fetch('/data').then(response => response.text()).then((quote) => {
+    document.getElementById('message-container').innerHTML = quote;
+  });
+}
+
+ window.onload = addMessage();
