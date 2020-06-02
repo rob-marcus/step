@@ -20,13 +20,38 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import java.util.List;
+import java.util.ArrayList;
+import com.google.gson.Gson;
+
+
 /** Servlet that returns some example content. TODO: modify this file to handle comments data */
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
+  private List<String> stringArray;
+  
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    response.setContentType("text/html;");
-    response.getWriter().println("<h1>Hello Rob!</h1>");
+
+    stringArray = new ArrayList<>();
+    stringArray.add("test 1");
+    stringArray.add("test 2");
+    stringArray.add("test 3");
+
+    String convertedJSON = convertToJsonUsingGson(stringArray);
+    response.setContentType("applications/json;");
+    response.getWriter().println(convertedJSON);
+  }
+
+  /**
+   * Converts a stringArray instance into a JSON string using the Gson library. 
+   * Lifted from ServerStatsServlet.java
+   */
+  private String convertToJsonUsingGson(List<String> stringArray) {
+    Gson gson = new Gson();
+    String json = gson.toJson(stringArray);
+    return json;
   }
 }
+
