@@ -17,6 +17,11 @@
       <input type="text" id="comment" name="comment"></input><br> 
       <input type="submit" id="submit"></input>
     </form>
+    <form id="/numberComments" method="GET">
+      <label for="numShown">Show this many comments:</label>
+      <input type="number" name="numShown" id="numShown" min=1 step=1></input>
+      <input type="submit" id="submit" value="Show"></input>
+    </form>
     <div id="message-container"></div>
     <div id="footer"></div>
   <script src="splashPage.js"></script>

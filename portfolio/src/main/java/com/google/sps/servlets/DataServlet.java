@@ -46,6 +46,9 @@ public class DataServlet extends HttpServlet {
 
     ArrayList<Comment> comments = new ArrayList<>();
 
+    int commentLimit = getCommentLimit(request);
+    int count = 0;
+
     for (Entity entity : results.asIterable()) {
       long id = entity.getKey().getId();
       String comment = (String) entity.getProperty("comment");
@@ -53,6 +56,11 @@ public class DataServlet extends HttpServlet {
 
       Comment newComment = new Comment(id, comment, timestamp);
       comments.add(newComment);
+      System.out.println(count + commentLimit);
+      count++;
+      if(count == commentLimit) {
+        break;
+      }
     }
 
     String convertedJSON = new Gson().toJson(comments);
@@ -97,5 +105,20 @@ public class DataServlet extends HttpServlet {
     String json = gson.toJson(stringArray);
     return json;
   }
+
+  /*
+   * Get num comments to show at any given time
+   */
+   private int getCommentLimit(HttpServletRequest request) {
+     System.out.println("Trying to get comment limit");
+     String numberString = request.getQueryString();
+     if (numberString == null) {
+       return 5;
+     }
+     else {
+       return Integer.parseInt(numberString.substring(9, 
+                                numberString.length()));
+     }
+   }
 }
 

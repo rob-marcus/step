@@ -93,7 +93,9 @@ interactiveTiles();
  * Using fetch request content from servlet and add to home page
  */
 function addMessage() {
-  fetch('/data').then(response => response.json()).then((quote) => {
+  const numShown = getCommentLimit();
+  document.getElementById("numShown").value = parseInt(numShown);
+  fetch('/data?numShown='+numShown).then(response => response.json()).then((quote) => {
     quote.forEach(Comment => console.log(Comment.comment + " at time " + Comment.timestamp));
     //document.getElementById('message-container').innerHTML = quote;
     const messageContainerDiv = document.getElementById("message-container");
@@ -129,3 +131,32 @@ function deleteComment(Comment) {
   fetch('/delete-comment', {method: 'POST', body: params});
 }
  window.onload = addMessage();
+
+
+function getCommentLimit() {
+  let tmp = (new URL(document.location)).searchParams;
+  let res = tmp.get("numShown");
+  if(!res || res.length == 0){
+    return "5";
+  }
+  return res;
+}
+
+//Client side pagination test code...
+
+var currentPage = 1; 
+var commentsPerPage = 2;
+
+function previousPage() {
+  currentPage = Math.max(1, currentPage--);
+  changePage(currentPage);
+}
+
+function nextPage() {
+  if (currentPage < numPages()) {
+    currentPage++;
+    changePage(currentPage);
+  }
+}
+
+
