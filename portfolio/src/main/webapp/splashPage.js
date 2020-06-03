@@ -93,9 +93,39 @@ interactiveTiles();
  * Using fetch request content from servlet and add to home page
  */
 function addMessage() {
-  fetch('/data').then(response => response.text()).then((quote) => {
-    document.getElementById('message-container').innerHTML = quote;
-  });
+  fetch('/data').then(response => response.json()).then((quote) => {
+    quote.forEach(Comment => console.log(Comment.comment + " at time " + Comment.timestamp));
+    //document.getElementById('message-container').innerHTML = quote;
+    const messageContainerDiv = document.getElementById("message-container");
+    quote.forEach(Comment => messageContainerDiv.appendChild(addMessageElements(Comment)));});
 }
 
+/**
+ * Build the elements of an individual message using JSON data
+ * Also create a delete button
+ */
+function addMessageElements(Comment) {
+  var messageDiv = document.createElement("div");
+
+  var commentDiv = document.createElement("p");
+  commentDiv.innerText = `${Comment.comment} posted at ${Comment.timestamp}`;
+
+  const deleteButtonElement = document.createElement("button");
+  deleteButtonElement.innerText = "Delete";
+  deleteButtonElement.addEventListener('click', () => {
+    //remove from datastore and DOM
+    deleteComment(Comment);
+    messageDiv.remove();
+  });
+  
+  messageDiv.appendChild(commentDiv);
+  messageDiv.appendChild(deleteButtonElement);
+  return messageDiv;
+}
+
+function deleteComment(Comment) {
+  const params = new URLSearchParams();
+  params.append('id', Comment.id);
+  fetch('/delete-comment', {method: 'POST', body: params});
+}
  window.onload = addMessage();
