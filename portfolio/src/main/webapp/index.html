@@ -15,13 +15,22 @@
     <form action="/data" method="POST">
       <label for="comment-preface">Leave a comment!</label><br>
       <input type="text" id="comment" name="comment"></input><br> 
-      <input type="submit" id="submit"></input>
+      <input type="submit" class="submit"></input>
     </form>
     <form id="/numberComments" method="GET">
       <label for="numShown">Show this many comments:</label>
       <input type="number" name="numShown" id="numShown" min=1 step=1></input>
-      <input type="submit" id="submit" value="Show"></input>
+      <input type="submit" class="submit" value="Show"></input>
     </form>
+    <div class="sort-comments">
+      <label for="sortingMethods">Sort:</label>
+      <select id="sortingMethods">
+        <option value="time">Time (most recent)</option>
+        <option value="likes">Likes (most popular)</option>
+      </select>
+    </div>
+
+
     <div id="message-container"></div>
     <div id="footer"></div>
   <script src="splashPage.js"></script>

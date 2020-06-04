@@ -46,7 +46,7 @@ public class DataServlet extends HttpServlet {
 
     ArrayList<Comment> comments = new ArrayList<>();
 
-    int commentLimit = getCommentLimit(request);
+    int commentLimit = Integer.parseInt(getParameter(request, "numShown", "5"));
     int count = 0;
 
     for (Entity entity : results.asIterable()) {
@@ -56,7 +56,7 @@ public class DataServlet extends HttpServlet {
 
       Comment newComment = new Comment(id, comment, timestamp);
       comments.add(newComment);
-      System.out.println(count + commentLimit);
+
       count++;
       if(count == commentLimit) {
         break;
@@ -110,14 +110,12 @@ public class DataServlet extends HttpServlet {
    * Get num comments to show at any given time
    */
    private int getCommentLimit(HttpServletRequest request) {
-     System.out.println("Trying to get comment limit");
-     String numberString = request.getQueryString();
-     if (numberString == null) {
+     String numShown = request.getParameter("numShown");
+     if (numShown == null) {
        return 5;
      }
      else {
-       return Integer.parseInt(numberString.substring(9, 
-                                numberString.length()));
+       return Integer.parseInt(numShown);
      }
    }
 }

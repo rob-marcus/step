@@ -94,8 +94,10 @@ interactiveTiles();
  */
 function addMessage() {
   const numShown = getCommentLimit();
+  const params = new URLSearchParams();
+  params.append('numShown', numShown);
   document.getElementById("numShown").value = parseInt(numShown);
-  fetch('/data?numShown='+numShown).then(response => response.json()).then((quote) => {
+  fetch('/data').then(response => response.json()).then((quote) => {
     quote.forEach(Comment => console.log(Comment.comment + " at time " + Comment.timestamp));
     //document.getElementById('message-container').innerHTML = quote;
     const messageContainerDiv = document.getElementById("message-container");
@@ -119,9 +121,25 @@ function addMessageElements(Comment) {
     deleteComment(Comment);
     messageDiv.remove();
   });
+
+  var likeAndButtonElements = document.createElement("div");
+  var likesElement = document.createElement("p");
+  var likes = 0;
+  likesElement.innerText = likes.toString() + " upvotes";
+
+  var likeButtonElement = document.createElement("button");
+  likeButtonElement.innerText = "Upvote";
+  likeButtonElement.addEventListener('click', () => {
+    likes++;
+    likesElement.innerText = likes + " upvotes";
+  });
+
+  likeAndButtonElements.appendChild(likesElement);
+  likeAndButtonElements.appendChild(likeButtonElement);
   
   messageDiv.appendChild(commentDiv);
   messageDiv.appendChild(deleteButtonElement);
+  messageDiv.appendChild(likeAndButtonElements);
   return messageDiv;
 }
 
@@ -130,8 +148,6 @@ function deleteComment(Comment) {
   params.append('id', Comment.id);
   fetch('/delete-comment', {method: 'POST', body: params});
 }
- window.onload = addMessage();
-
 
 function getCommentLimit() {
   let tmp = (new URL(document.location)).searchParams;
@@ -142,21 +158,4 @@ function getCommentLimit() {
   return res;
 }
 
-//Client side pagination test code...
-
-var currentPage = 1; 
-var commentsPerPage = 2;
-
-function previousPage() {
-  currentPage = Math.max(1, currentPage--);
-  changePage(currentPage);
-}
-
-function nextPage() {
-  if (currentPage < numPages()) {
-    currentPage++;
-    changePage(currentPage);
-  }
-}
-
-
+addMessage();
