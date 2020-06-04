@@ -86,3 +86,74 @@ function interactiveTiles() {
 
 interactiveTiles();
 
+
+
+/**
+ * Week 3 dev stuff
+ * Using fetch request content from servlet and add to home page
+ */
+function addMessage() {
+  const numShown = getCommentLimit();
+
+  document.getElementById("numShown").value = parseInt(numShown);
+  fetch('/data?numShown='+numShown).then(response => response.json()).then((quote) => {
+    const messageContainerDiv = document.getElementById("message-container");
+    quote.forEach(Comment => messageContainerDiv.appendChild(createMessageElements(Comment)));
+  });
+}
+
+/**
+ * Build the elements of an individual message using JSON data
+ * Also create a delete button
+ */
+function createMessageElements(Comment) {
+  var messageDiv = document.createElement("div");
+
+  var commentElement = document.createElement("p");
+  commentElement.innerText = `${Comment.comment} posted at ${Comment.timestamp}`;
+
+  const deleteButtonElement = document.createElement("button");
+  deleteButtonElement.innerText = "Delete comment";
+  deleteButtonElement.addEventListener('click', () => {
+    //remove from datastore and DOM
+    deleteComment(Comment);
+    messageDiv.remove();
+  });
+
+  var likeAndButtonElements = document.createElement("div");
+  var likesElement = document.createElement("p");
+  var likes = 0;
+  likesElement.innerText = likes.toString() + " upvotes";
+
+  var likeButtonElement = document.createElement("button");
+  likeButtonElement.innerText = "Upvote";
+  likeButtonElement.addEventListener('click', () => {
+    likes++;
+    likesElement.innerText = likes + " upvotes";
+  });
+
+  likeAndButtonElements.appendChild(likesElement);
+  likeAndButtonElements.appendChild(likeButtonElement);
+  
+  messageDiv.appendChild(commentElement);
+  messageDiv.appendChild(likeAndButtonElements);
+  messageDiv.appendChild(deleteButtonElement);
+  return messageDiv;
+}
+
+function deleteComment(Comment) {
+  const params = new URLSearchParams();
+  params.append('id', Comment.id);
+  fetch('/delete-comment', {method: 'POST', body: params});
+}
+
+function getCommentLimit() {
+  let tmp = (new URL(document.location)).searchParams;
+  let res = tmp.get("numShown");
+  if(!res || res.length == 0){
+    return "5";
+  }
+  return res;
+}
+
+addMessage();
