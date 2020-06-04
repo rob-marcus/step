@@ -45,8 +45,9 @@ public class DataServlet extends HttpServlet {
     PreparedQuery results = datastore.prepare(query);
 
     ArrayList<Comment> comments = new ArrayList<>();
-
-    int commentLimit = Integer.parseInt(getParameter(request, "numShown", "5"));
+    String defaultCommentLimit = "5";
+    int commentLimit = Integer.parseInt(getParameter(request, "numShown",
+                                                    "5"));
     int count = 0;
 
     for (Entity entity : results.asIterable()) {
@@ -71,7 +72,7 @@ public class DataServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    String comment = getParameter(request, "comment", "");
+    String comment = getParameter(request, "comment", /*default comment value=*/"");
     long timestamp = System.currentTimeMillis();
     
     Entity commentEntity = new Entity("Comment");
@@ -86,11 +87,12 @@ public class DataServlet extends HttpServlet {
   }
 
   /*
-   * gets page input; lifted from TextProcessorServlet.java example
+   * Gets page input; lifted from TextProcessorServlet.java example
    */
   private String getParameter(HttpServletRequest request, String name, String defaultValue) {
     String value = request.getParameter(name);
     if (value == null) {
+
       return defaultValue;
     }
     return value;

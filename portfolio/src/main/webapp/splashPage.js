@@ -94,28 +94,26 @@ interactiveTiles();
  */
 function addMessage() {
   const numShown = getCommentLimit();
-  const params = new URLSearchParams();
-  params.append('numShown', numShown);
+
   document.getElementById("numShown").value = parseInt(numShown);
-  fetch('/data').then(response => response.json()).then((quote) => {
-    quote.forEach(Comment => console.log(Comment.comment + " at time " + Comment.timestamp));
-    //document.getElementById('message-container').innerHTML = quote;
+  fetch('/data?numShown='+numShown).then(response => response.json()).then((quote) => {
     const messageContainerDiv = document.getElementById("message-container");
-    quote.forEach(Comment => messageContainerDiv.appendChild(addMessageElements(Comment)));});
+    quote.forEach(Comment => messageContainerDiv.appendChild(createMessageElements(Comment)));
+  });
 }
 
 /**
  * Build the elements of an individual message using JSON data
  * Also create a delete button
  */
-function addMessageElements(Comment) {
+function createMessageElements(Comment) {
   var messageDiv = document.createElement("div");
 
-  var commentDiv = document.createElement("p");
-  commentDiv.innerText = `${Comment.comment} posted at ${Comment.timestamp}`;
+  var commentElement = document.createElement("p");
+  commentElement.innerText = `${Comment.comment} posted at ${Comment.timestamp}`;
 
   const deleteButtonElement = document.createElement("button");
-  deleteButtonElement.innerText = "Delete";
+  deleteButtonElement.innerText = "Delete comment";
   deleteButtonElement.addEventListener('click', () => {
     //remove from datastore and DOM
     deleteComment(Comment);
@@ -137,9 +135,9 @@ function addMessageElements(Comment) {
   likeAndButtonElements.appendChild(likesElement);
   likeAndButtonElements.appendChild(likeButtonElement);
   
-  messageDiv.appendChild(commentDiv);
-  messageDiv.appendChild(deleteButtonElement);
+  messageDiv.appendChild(commentElement);
   messageDiv.appendChild(likeAndButtonElements);
+  messageDiv.appendChild(deleteButtonElement);
   return messageDiv;
 }
 
