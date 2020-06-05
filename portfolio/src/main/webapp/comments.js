@@ -92,7 +92,7 @@ function addMessage(pageNumber = 0, sortMethod = {"feature": "timestamp",
  */
 function createMessageElements(Comment) {
   var messageDiv = document.createElement("div");
-
+  messageDiv.className = "message-box";
   var commentElement = document.createElement("p");
   commentElement.innerText = `${Comment.comment} posted at ${Comment.timestamp}`;
 
