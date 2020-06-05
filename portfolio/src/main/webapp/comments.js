@@ -49,7 +49,7 @@ function pagination() {
       pageElement.href = "#";
       pageElement.addEventListener('click', () => {
         //load comments on pageNumber
-        addMessage(thisPageNumber, getSortMethod);
+        addMessage(thisPageNumber, getSortMethod());
       });
 
       paginationDiv.appendChild(pageElement);
