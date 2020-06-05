@@ -98,24 +98,25 @@ function createMessageElements(Comment) {
     messageDiv.remove();
   });
 
-  var likeAndButtonElements = document.createElement("div");
-  var likesElement = document.createElement("p");
-  var likes = 0;
-  likesElement.innerText = likes.toString() + " upvotes";
+  var upvoteAndButtonElements = document.createElement("div");
+  var upvoteElement = document.createElement("p");
+  var numUpvotes = Comment.upvotes;
+  upvotesElement.innerText = numUpvotes.toString() + " upvotes";
 
-  var likeButtonElement = document.createElement("button");
-  likeButtonElement.innerText = "Upvote";
-  likeButtonElement.addEventListener('click', () => {
+  var upvoteButtonElement = document.createElement("button");
+  upvoteButtonElement.innerText = "Upvote";
+  upvoteButtonElement.addEventListener('click', () => {
     //TODO: ADD BACKEND SUPPORT FOR THIS...
-    likes++;
-    likesElement.innerText = likes + " upvotes";
+    numUpvotes++;
+    upvotesElement.innerText = numUpvotes + " upvotes";
+    upvoteComment(Comment);
   });
 
-  likeAndButtonElements.appendChild(likesElement);
-  likeAndButtonElements.appendChild(likeButtonElement);
+  upvoteAndButtonElements.appendChild(upvotesElement);
+  upvoteAndButtonElements.appendChild(upvoteButtonElement);
   
   messageDiv.appendChild(commentElement);
-  messageDiv.appendChild(likeAndButtonElements);
+  messageDiv.appendChild(upvoteAndButtonElements);
   messageDiv.appendChild(deleteButtonElement);
   return messageDiv;
 }
@@ -124,6 +125,15 @@ function deleteComment(Comment) {
   const params = new URLSearchParams();
   params.append('id', Comment.id);
   fetch('/delete-comment', {method: 'POST', body: params});
+}
+
+function upvoteComment(Comment) {
+  const params = new URLSearchParams(); 
+  params.append('id', Comment.id);
+  params.append('likes', Comment.likes + 1)
+  params.append('comment', Comment.comment);
+  params.append('timestamp', Comment.timestamp)
+  fetch('upvote-comment', {method: 'POST', body: params});
 }
 
 function getCommentLimit() {

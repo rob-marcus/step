@@ -70,8 +70,9 @@ public class DataServlet extends HttpServlet {
         long id = entity.getKey().getId();
         String comment = (String) entity.getProperty("comment");
         long timestamp = (long) entity.getProperty("timestamp");
+        long upvotes = (long) entity.getProperty("upvotes");
 
-        Comment newComment = new Comment(id, comment, timestamp);
+        Comment newComment = new Comment(id, comment, timestamp, upvotes);
         comments.add(newComment);
       }
       count++;
@@ -79,7 +80,7 @@ public class DataServlet extends HttpServlet {
         break;
       }
     }
-
+    System.out.println(comments);
     String convertedJSON = new Gson().toJson(comments);
     
     response.setContentType("applications/json;");
@@ -90,10 +91,12 @@ public class DataServlet extends HttpServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String comment = getParameter(request, "comment", /*default comment value=*/"");
     long timestamp = System.currentTimeMillis();
+    long upvotes = Long.valueOf(1);
     
     Entity commentEntity = new Entity("Comment");
     commentEntity.setProperty("comment", comment);
     commentEntity.setProperty("timestamp", timestamp);
+    commentEntity.setProperty("upvotes", upvotes);
     
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     datastore.put(commentEntity);
