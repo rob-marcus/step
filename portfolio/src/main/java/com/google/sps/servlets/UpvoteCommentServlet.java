@@ -49,12 +49,16 @@ public class UpvoteCommentServlet extends HttpServlet {
     String comment = request.getParameter("comment");
 
     Key taskEntityKey = KeyFactory.createKey("Comment", id);
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     datastore.delete(taskEntityKey);
-    taskEntityKey.setKind("Comment")
-    
-    //DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
-    //Entity upvotedComment = Entity.newBuilder(datastore.get(taskEntityKey)).set("upvotes", upvotes).build();
-    //datastore.update(upvotedComment);
+    Entity commentEntity = new Entity("Comment");
+    commentEntity.setProperty("comment", comment);
+    commentEntity.setProperty("timestamp", timestamp);
+    commentEntity.setProperty("upvotes", upvotes);
+    commentEntity.setProperty("id", id);
+
+    datastore.put(commentEntity);
+
   }
 }

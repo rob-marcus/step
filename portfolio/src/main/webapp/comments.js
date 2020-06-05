@@ -101,18 +101,18 @@ function createMessageElements(Comment) {
   var upvoteAndButtonElements = document.createElement("div");
   var upvoteElement = document.createElement("p");
   var numUpvotes = Comment.upvotes;
-  upvotesElement.innerText = numUpvotes.toString() + " upvotes";
+  upvoteElement.innerText = numUpvotes.toString() + " upvotes";
 
   var upvoteButtonElement = document.createElement("button");
   upvoteButtonElement.innerText = "Upvote";
   upvoteButtonElement.addEventListener('click', () => {
     //TODO: ADD BACKEND SUPPORT FOR THIS...
     numUpvotes++;
-    upvotesElement.innerText = numUpvotes + " upvotes";
+    upvoteElement.innerText = numUpvotes + " upvotes";
     upvoteComment(Comment);
   });
 
-  upvoteAndButtonElements.appendChild(upvotesElement);
+  upvoteAndButtonElements.appendChild(upvoteElement);
   upvoteAndButtonElements.appendChild(upvoteButtonElement);
   
   messageDiv.appendChild(commentElement);
@@ -130,10 +130,10 @@ function deleteComment(Comment) {
 function upvoteComment(Comment) {
   const params = new URLSearchParams(); 
   params.append('id', Comment.id);
-  params.append('likes', Comment.likes + 1)
+  params.append('upvotes', Comment.upvotes + 1)
   params.append('comment', Comment.comment);
   params.append('timestamp', Comment.timestamp)
-  fetch('upvote-comment', {method: 'POST', body: params});
+  fetch("/upvote-comment", {method: 'POST', body: params});
 }
 
 function getCommentLimit() {
