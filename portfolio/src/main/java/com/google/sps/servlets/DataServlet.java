@@ -46,15 +46,18 @@ public class DataServlet extends HttpServlet {
     String defaultPageNumber = "0";
     int pageNumber = Integer.parseInt(getParameter(request, "pageNumber", defaultPageNumber));
 
-    String defaultSortMethod = "DESCENDING";
-    String sortMethod = getParameter(request, "sortMethod", defaultSortMethod);
+    String defaultSortDirection = "DESCENDING";
+    String sortDirection = getParameter(request, "sortDirection", defaultSortDirection);
+
+    String defaultSortFeature = "timestamp";
+    String sortFeature = getParameter(request, "sortFeature", defaultSortFeature);
 
     Query query = new Query("Comment");
     
-    if (sortMethod.equals(defaultSortMethod)) {
-      query.addSort("timestamp", SortDirection.DESCENDING);
+    if (sortDirection.equals(defaultSortDirection)) {
+      query.addSort(sortFeature, SortDirection.DESCENDING);
     } else {
-      query.addSort("timestamp", SortDirection.ASCENDING);
+      query.addSort(sortFeature, SortDirection.ASCENDING);
     }
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     PreparedQuery results = datastore.prepare(query);
@@ -80,7 +83,7 @@ public class DataServlet extends HttpServlet {
         break;
       }
     }
-    System.out.println(comments);
+
     String convertedJSON = new Gson().toJson(comments);
     
     response.setContentType("applications/json;");

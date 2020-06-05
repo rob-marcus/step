@@ -61,7 +61,9 @@ function pagination() {
 /**
  * Using fetch request content from servlet and add to home page
  */
-function addMessage(pageNumber = 0, sortMethod = "DESCENDING") {
+function addMessage(pageNumber = 0, sortMethod = {"feature": "timestamp", 
+                                                  "direction": "DESCENDING"})
+{
   /**
    * GET does not support additional URL params in the body
    * So...
@@ -73,7 +75,11 @@ function addMessage(pageNumber = 0, sortMethod = "DESCENDING") {
    */
   const numShown = getCommentLimit();
   clearMessageDiv();
-  const url = `/data?pageNumber=${pageNumber}&numShown=${numShown}&sortMethod=${sortMethod}`;
+  const url = [`/data?pageNumber=${pageNumber}`,
+              `&numShown=${numShown}`,
+              `&sortFeature=${sortMethod.feature}`,
+              `&sortDirection=${sortMethod.direction}`].join("");
+
   fetch(url).then(response => response.json()).then((quote) => {
     const messageContainerDiv = document.getElementById("message-container");
     quote.forEach(Comment => messageContainerDiv.appendChild(createMessageElements(Comment)));
@@ -106,7 +112,6 @@ function createMessageElements(Comment) {
   var upvoteButtonElement = document.createElement("button");
   upvoteButtonElement.innerText = "Upvote";
   upvoteButtonElement.addEventListener('click', () => {
-    //TODO: ADD BACKEND SUPPORT FOR THIS...
     numUpvotes++;
     upvoteElement.innerText = numUpvotes + " upvotes";
     upvoteComment(Comment);
@@ -151,12 +156,13 @@ function getSortMethod() {
   var sortMethodOptions = document.getElementById("sortMethod");
   var sortMethod = sortMethodOptions.options[sortMethodOptions.selectedIndex].value;
   document.getElementById("sortMethod").value = sortMethod;
+  var splitSortMethod = sortMethod.split(" ");
 
-  return sortMethod;
+  return {"feature": splitSortMethod[0], "direction": splitSortMethod[1]};
 }
 
 function applySortMethod() {
-  addMessage(0, getSortMethod);
+  addMessage(0, getSortMethod());
 }
 
 addMessage();
