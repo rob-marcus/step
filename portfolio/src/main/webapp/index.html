@@ -24,10 +24,9 @@
     </form>
     <form id="sortComments">
       <label for="sortMethod">Sort:</label>
-      <select id="sortMethod" method="GET">
-        <option value="timestamp" selected="selected">Time (newest)</option>
-        <option value="likes">Time (oldest)</option>
-        <input type="submit" class="submit" value="Update"></input>
+      <select id="sortMethod" onchange="applySortMethod()">
+        <option value="DESCENDING" selected="selected">Time (newest)</option>
+        <option value="ASCENDING">Time (oldest)</option>
       </select>
     </form>
 
@@ -37,6 +36,7 @@
     <div id="footer"></div>
   <script src="splashPage.js"></script>
   <script src="repeatedElements.js"></script>
+  <script src="comments.js"></script>
   <script type="text/javascript">
     header();
   </script>

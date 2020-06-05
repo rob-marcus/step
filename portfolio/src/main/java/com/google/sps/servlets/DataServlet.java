@@ -45,11 +45,17 @@ public class DataServlet extends HttpServlet {
 
     String defaultPageNumber = "0";
     int pageNumber = Integer.parseInt(getParameter(request, "pageNumber", defaultPageNumber));
-    System.out.println("looks like page number is " + pageNumber);
 
+    String defaultSortMethod = "DESCENDING";
+    String sortMethod = getParameter(request, "sortMethod", defaultSortMethod);
 
-    Query query = new Query("Comment").addSort("timestamp", SortDirection.DESCENDING);
-
+    Query query = new Query("Comment");
+    
+    if (sortMethod.equals(defaultSortMethod)) {
+      query.addSort("timestamp", SortDirection.DESCENDING);
+    } else {
+      query.addSort("timestamp", SortDirection.ASCENDING);
+    }
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     PreparedQuery results = datastore.prepare(query);
     
@@ -58,25 +64,18 @@ public class DataServlet extends HttpServlet {
 
     int startingIndex = pageNumber * commentLimit;
     int count = 0;
-    System.out.println("");
-    System.out.println("Currently on page number" + pageNumber);
-    System.out.println("Trying to display " + commentLimit + " comment's per page");
-    
+
     for (Entity entity : results.asIterable()) {
-      System.out.println("\tCount is currently " + count);
       if (count >= startingIndex) {
-        System.out.println("\t\tAdding a comment to the page");
         long id = entity.getKey().getId();
         String comment = (String) entity.getProperty("comment");
         long timestamp = (long) entity.getProperty("timestamp");
-        System.out.println("\t\tLooks like the comment we want to add is " + comment);
+
         Comment newComment = new Comment(id, comment, timestamp);
         comments.add(newComment);
       }
       count++;
       if(count == startingIndex + commentLimit) {
-        System.out.println("\t Breaking because count is at " + count);
-        System.out.println("");
         break;
       }
     }
