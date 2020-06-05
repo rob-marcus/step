@@ -23,15 +23,17 @@
       <input type="submit" class="submit" value="Show"></input>
     </form>
     <form id="sortComments">
-      <label for="sortingMethods">Sort:</label>
-      <select id="sortingMethods">
-        <option value="time">Time (newest)</option>
+      <label for="sortMethod">Sort:</label>
+      <select id="sortMethod" method="GET">
+        <option value="timestamp" selected="selected">Time (newest)</option>
         <option value="likes">Time (oldest)</option>
+        <input type="submit" class="submit" value="Update"></input>
       </select>
     </form>
 
 
     <div id="message-container"></div>
+    <div id="pagination"></div>
     <div id="footer"></div>
   <script src="splashPage.js"></script>
   <script src="repeatedElements.js"></script>

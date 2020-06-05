@@ -30,6 +30,7 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
+import com.google.appengine.api.datastore.FetchOptions;
 
 import com.google.sps.data.Comment;
 
@@ -39,27 +40,43 @@ public class DataServlet extends HttpServlet {
   
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    String defaultCommentLimit = "5";
+    int commentLimit = Integer.parseInt(getParameter(request, "numShown", defaultCommentLimit));
+
+    String defaultPageNumber = "0";
+    int pageNumber = Integer.parseInt(getParameter(request, "pageNumber", defaultPageNumber));
+    System.out.println("looks like page number is " + pageNumber);
+
+
     Query query = new Query("Comment").addSort("timestamp", SortDirection.DESCENDING);
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     PreparedQuery results = datastore.prepare(query);
+    
 
     ArrayList<Comment> comments = new ArrayList<>();
-    String defaultCommentLimit = "5";
-    int commentLimit = Integer.parseInt(getParameter(request, "numShown",
-                                                    "5"));
+
+    int startingIndex = pageNumber * commentLimit;
     int count = 0;
-
+    System.out.println("");
+    System.out.println("Currently on page number" + pageNumber);
+    System.out.println("Trying to display " + commentLimit + " comment's per page");
+    
     for (Entity entity : results.asIterable()) {
-      long id = entity.getKey().getId();
-      String comment = (String) entity.getProperty("comment");
-      long timestamp = (long) entity.getProperty("timestamp");
-
-      Comment newComment = new Comment(id, comment, timestamp);
-      comments.add(newComment);
-
+      System.out.println("\tCount is currently " + count);
+      if (count >= startingIndex) {
+        System.out.println("\t\tAdding a comment to the page");
+        long id = entity.getKey().getId();
+        String comment = (String) entity.getProperty("comment");
+        long timestamp = (long) entity.getProperty("timestamp");
+        System.out.println("\t\tLooks like the comment we want to add is " + comment);
+        Comment newComment = new Comment(id, comment, timestamp);
+        comments.add(newComment);
+      }
       count++;
-      if(count == commentLimit) {
+      if(count == startingIndex + commentLimit) {
+        System.out.println("\t Breaking because count is at " + count);
+        System.out.println("");
         break;
       }
     }
@@ -92,7 +109,6 @@ public class DataServlet extends HttpServlet {
   private String getParameter(HttpServletRequest request, String name, String defaultValue) {
     String value = request.getParameter(name);
     if (value == null) {
-
       return defaultValue;
     }
     return value;
@@ -108,17 +124,6 @@ public class DataServlet extends HttpServlet {
     return json;
   }
 
-  /*
-   * Get num comments to show at any given time
-   */
-   private int getCommentLimit(HttpServletRequest request) {
-     String numShown = request.getParameter("numShown");
-     if (numShown == null) {
-       return 5;
-     }
-     else {
-       return Integer.parseInt(numShown);
-     }
-   }
+
 }
 

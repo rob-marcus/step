@@ -86,18 +86,68 @@ function interactiveTiles() {
 
 interactiveTiles();
 
+/**
+ * Return the TOTAL number of undeleted comments currently in datastore 
+ */
 
+
+function numComments() {
+  (fetch('/num-comments').then(response => response.text()).then(num => {
+    return num;
+  }));
+}
+
+/**
+ * Very basic pagination feature...
+ * Needs to be refined to have an upper limit on number of page buttons
+ * 
+ */
+function pagination() {
+  var numShown = getCommentLimit();
+  (fetch('/num-comments').then(response => response.text()).then(numComments =>
+  {
+    var numPages = Math.ceil(numComments/numShown);
+    var paginationDiv = document.getElementById("pagination");
+    for (var pageNumber = 0; pageNumber < numPages; pageNumber++) {
+      const thisPageNumber = pageNumber;
+      console.log("making the button, pn seems to be " + pageNumber);
+      var pageElement = document.createElement("a");
+      pageElement.innerText = thisPageNumber;
+      pageElement.href = "#";
+      pageElement.addEventListener('click', () => {
+        //load comments on pageNumber
+        document.getElementById("message-container").innerHTML = "";
+        addMessage(thisPageNumber);
+      });
+      console.log("making buttons, pn is curr " + thisPageNumber);
+      paginationDiv.appendChild(pageElement);
+    }
+  }));
+}
+
+pagination();
 
 /**
  * Week 3 dev stuff
  * Using fetch request content from servlet and add to home page
  */
-function addMessage() {
+function addMessage(pageNumber = 0) {
+  /**
+   * GET does not support additional URL params in the body
+   * So...
+   * A novel hack around this (rather than rewrite the GET logic)
+   * Is to just manually add the strings into the fetch url
+   * This 'works' because the java function getParameter 
+   * Will still parse a manually constructed URL string
+   * So...
+   */
   const numShown = getCommentLimit();
-
-  document.getElementById("numShown").value = parseInt(numShown);
-  fetch('/data?numShown='+numShown).then(response => response.json()).then((quote) => {
+  const sortMethod = getSortMethod();
+  fetch('/data?pageNumber='+pageNumber+"&numShown="+numShown)
+  .then(response => response.json()).then((quote) => {
+    console.log("In fetch, page number seems to be " + pageNumber);
     const messageContainerDiv = document.getElementById("message-container");
+
     quote.forEach(Comment => messageContainerDiv.appendChild(createMessageElements(Comment)));
   });
 }
@@ -151,9 +201,22 @@ function getCommentLimit() {
   let tmp = (new URL(document.location)).searchParams;
   let res = tmp.get("numShown");
   if(!res || res.length == 0){
-    return "5";
+    res = "5";
   }
+  //update the text box to display the amount after refresh 
+  document.getElementById("numShown").value = parseInt(res);
   return res;
 }
 
-addMessage();
+function getSortMethod() {
+  //let tmp = (new URL(document.location)).searchParams;
+  //let res = tmp.get("sortMethod");
+
+  var sortMethodOptions = document.getElementById("sortMethod");
+  var sortMethod = sortMethodOptions.options[sortMethodOptions.selectedIndex].value;
+  console.log(sortMethod);
+  document.getElementById("sortMethod").value = "likes";
+  console.log(sortMethod);
+
+  return sortMethod;
+}
