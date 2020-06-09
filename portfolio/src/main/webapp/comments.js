@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// TODO: Rewrite with a general class to keep track of things more easily...
 
 /**
  * Erases all inner HTML content within message-container div
@@ -65,17 +64,17 @@ function addMessage(pageNumber = 0, sortMethod = "true") {
  * Build the elements of an individual message using JSON data
  * Also create a delete button
  */
-function createMessageElements(Comment) {
+function createMessageElements(comment) {
   var messageDiv = document.createElement("div");
 
   var commentElement = document.createElement("p");
-  commentElement.innerText = `${Comment.comment} posted at ${Comment.timestamp}`;
+  commentElement.innerText = `${comment.comment} posted at ${comment.timestamp}`;
 
   const deleteButtonElement = document.createElement("button");
   deleteButtonElement.innerText = "Delete comment";
   deleteButtonElement.addEventListener('click', () => {
     //remove from datastore and DOM
-    deleteComment(Comment);
+    deleteComment(comment);
     messageDiv.remove();
   });
 
@@ -87,7 +86,6 @@ function createMessageElements(Comment) {
   var likeButtonElement = document.createElement("button");
   likeButtonElement.innerText = "Upvote";
   likeButtonElement.addEventListener('click', () => {
-    //TODO: ADD BACKEND SUPPORT FOR THIS...
     likes++;
     likesElement.innerText = likes + " upvotes";
   });
@@ -101,9 +99,9 @@ function createMessageElements(Comment) {
   return messageDiv;
 }
 
-function deleteComment(Comment) {
+function deleteComment(comment) {
   const params = new URLSearchParams();
-  params.append('id', Comment.id);
+  params.append('id', comment.id);
   fetch('/delete-comment', {method: 'POST', body: params});
 }
 /**

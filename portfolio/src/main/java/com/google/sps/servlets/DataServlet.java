@@ -31,6 +31,7 @@ import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.appengine.api.datastore.FetchOptions;
+import com.google.appengine.api.datastore.QueryResultList;
 
 import com.google.sps.data.Comment;
 
@@ -56,28 +57,27 @@ public class DataServlet extends HttpServlet {
     } else {
       query.addSort("timestamp", SortDirection.ASCENDING);
     }
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    PreparedQuery results = datastore.prepare(query);
     
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+
+    int startingIndex = pageNumber * commentLimit;
+
+    List<Entity> resultsList = datastore.prepare(query)
+                                        .asList(FetchOptions.Builder
+                                        .withLimit(startingIndex + commentLimit));
+
+    int endingIndex = Math.min(startingIndex + commentLimit, resultsList.size());
 
     List<Comment> comments = new ArrayList<>();
 
-    int startingIndex = pageNumber * commentLimit;
-    int count = 0;
+    for (int currIndex = startingIndex; currIndex < endingIndex; currIndex++) {
+      Entity entity = resultsList.get(currIndex);
+      long id = entity.getKey().getId();
+      String comment = (String) entity.getProperty("comment");
+      long timestamp = (long) entity.getProperty("timestamp");
 
-    for (Entity entity : results.asIterable()) {
-      if (count >= startingIndex) {
-        long id = entity.getKey().getId();
-        String comment = (String) entity.getProperty("comment");
-        long timestamp = (long) entity.getProperty("timestamp");
-
-        Comment newComment = new Comment(id, comment, timestamp);
-        comments.add(newComment);
-      }
-      count++;
-      if(count == startingIndex + commentLimit) {
-        break;
-      }
+      Comment newComment = new Comment(id, comment, timestamp);
+      comments.add(newComment);
     }
 
     String convertedJSON = new Gson().toJson(comments);
