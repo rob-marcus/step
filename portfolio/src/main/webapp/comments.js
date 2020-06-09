@@ -58,7 +58,7 @@ function addMessage(pageNumber = 0, sortDirection = "true") {
   var url =  "/data?".concat(`pageNumber=${pageNumber}`,
                             `&commentLimit=${commentLimit}`,
                             `&sortDirection=${sortDirection}`);
-  console.log(url);
+
   fetch(url).then(response => response.json()).then((quote) => {
     const messageContainerDiv = document.getElementById("message-container");
     quote.forEach(comment => messageContainerDiv
