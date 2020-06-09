@@ -41,13 +41,13 @@ public class DataServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String defaultCommentLimit = "5";
-    int commentLimit = Integer.parseInt(getParameter(request, "numShown", defaultCommentLimit));
+    int commentLimit = getIntInpOrDefault(request, "commentLimit", defaultCommentLimit);
 
     String defaultPageNumber = "0";
-    int pageNumber = Integer.parseInt(getParameter(request, "pageNumber", defaultPageNumber));
+    int pageNumber = getIntInpOrDefault(request, "pageNumber", defaultPageNumber);
 
     String defaultSortMethod = "true";
-    String sortMethod = getParameter(request, "sortMethod", defaultSortMethod);
+    String sortMethod = getParameterOrDefault(request, "sortMethod", defaultSortMethod);
 
     Query query = new Query("Comment");
     
@@ -88,7 +88,7 @@ public class DataServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    String comment = getParameter(request, "comment", /*default comment value=*/"");
+    String comment = getParameterOrDefault(request, "comment", /*default comment value=*/"");
     long timestamp = System.currentTimeMillis();
     
     Entity commentEntity = new Entity("Comment");
@@ -105,7 +105,7 @@ public class DataServlet extends HttpServlet {
   /*
    * Gets page input; lifted from TextProcessorServlet.java example
    */
-  private String getParameter(HttpServletRequest request, String name, String defaultValue) {
+  private String getParameterOrDefault(HttpServletRequest request, String name, String defaultValue) {
     String value = request.getParameter(name);
     if (value == null) {
       return defaultValue;
@@ -113,6 +113,14 @@ public class DataServlet extends HttpServlet {
     return value;
   }
 
+  private int getIntInpOrDefault(HttpServletRequest request, String name, String defaultValue) {
+    try {
+      int inpValue = Integer.parseInt(getParameterOrDefault(request, name, defaultValue));
+      return inpValue;
+    } catch (NumberFormatException nfe) {
+      return Integer.parseInt(defaultValue);
+    }
+  }
   /*
    * Converts a stringArray instance into a JSON string using the Gson library. 
    * Lifted from ServerStatsServlet.java

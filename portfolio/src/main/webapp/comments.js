@@ -36,10 +36,10 @@ function numComments() {
  * Needs to be refined to have an upper limit on number of page buttons
  */
 function pagination() {
-  var numShown = getCommentLimit();
+  var commentLimit = getCommentLimit();
   (fetch('/num-comments').then(response => response.text()).then(numComments =>
   {
-    var numPages = Math.ceil(numComments/numShown);
+    var numPages = Math.ceil(numComments/commentLimit);
     var paginationDiv = document.getElementById("pagination");
     for (var pageNumber = 0; pageNumber < numPages; pageNumber++) {
       const thisPageNumber = pageNumber;
@@ -62,9 +62,9 @@ function pagination() {
  * Using fetch request content from servlet and add to home page
  */
 function addMessage(pageNumber = 0, sortMethod = "true") {
-  const numShown = getCommentLimit();
+  const commentLimit = getCommentLimit();
   clearMessageDiv();
-  const url = `/data?pageNumber=${pageNumber}&numShown=${numShown}&sortMethod=${sortMethod}`;
+  const url = `/data?pageNumber=${pageNumber}&commentLimit=${commentLimit}&sortMethod=${sortMethod}`;
   fetch(url).then(response => response.json()).then((quote) => {
     const messageContainerDiv = document.getElementById("message-container");
     quote.forEach(Comment => messageContainerDiv.appendChild(createMessageElements(Comment)));
@@ -116,16 +116,23 @@ function deleteComment(Comment) {
   params.append('id', Comment.id);
   fetch('/delete-comment', {method: 'POST', body: params});
 }
+/**
+ * Basic test to check well typed and apply some bounds
+ */
+function isValidNumInp(numberInp) {
+  const isValidInp = !isNaN(numberInp);
+  return isValidInp && (parseInt(numberInp) > 0 && parseInt(numberInp) < 1000);
+}
 
 function getCommentLimit() {
-  let tmp = (new URL(document.location)).searchParams;
-  let res = tmp.get("numShown");
-  if(!res || res.length == 0){
-    res = "5";
+  let pageParams = (new URL(document.location)).searchParams;
+  let commentLimit = pageParams.get("commentLimit");
+  if(!isValidNumInp(commentLimit) || !commentLimit || commentLimit.length == 0){
+    commentLimit = "5"; //reset to some default if malformed input
   }
   //update the text box to display the amount after refresh 
-  document.getElementById("numShown").value = parseInt(res);
-  return res;
+  document.getElementById("commentLimit").value = parseInt(commentLimit);
+  return commentLimit;
 }
 
 function getSortMethod() {
