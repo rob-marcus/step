@@ -60,7 +60,7 @@ public class DataServlet extends HttpServlet {
     PreparedQuery results = datastore.prepare(query);
     
 
-    ArrayList<Comment> comments = new ArrayList<>();
+    List<Comment> comments = new ArrayList<>();
 
     int startingIndex = pageNumber * commentLimit;
     int count = 0;

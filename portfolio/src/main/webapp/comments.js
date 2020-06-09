@@ -58,7 +58,7 @@ function addMessage(pageNumber = 0, sortMethod = "true") {
   const url = `/data?pageNumber=${pageNumber}&commentLimit=${commentLimit}&sortMethod=${sortMethod}`;
   fetch(url).then(response => response.json()).then((quote) => {
     const messageContainerDiv = document.getElementById("message-container");
-    quote.forEach(Comment => messageContainerDiv.appendChild(createMessageElements(Comment)));
+    quote.forEach(comment => messageContainerDiv.appendChild(createMessageElements(comment)));
   });
 }
 
@@ -129,8 +129,7 @@ function getCommentLimit() {
 function getSortMethod() {
   var sortMethodOptions = document.getElementById("sortMethod");
   var sortMethod = sortMethodOptions.options[sortMethodOptions.selectedIndex].value;
-  //update select menu to reflect what has been chosen
-  document.getElementById("sortMethod").value = sortMethod;
+
 
   return sortMethod;
 }
