@@ -37,7 +37,7 @@ function loadComments() {
       pageElement.href = "#";
       pageElement.addEventListener('click', () => {
         //load comments on pageNumber
-        addMessage(thisPageNumber, getSortMethod());
+        addMessage(thisPageNumber, getSortDirection());
       });
 
       commentsDiv.appendChild(pageElement);
@@ -50,13 +50,19 @@ function loadComments() {
 /**
  * Using fetch request content from servlet and add to home page
  */
-function addMessage(pageNumber = 0, sortMethod = "true") {
+function addMessage(pageNumber = 0, sortDirection = "true") {
   const commentLimit = getCommentLimit();
   clearMessageDiv();
-  const url = `/data?pageNumber=${pageNumber}&commentLimit=${commentLimit}&sortMethod=${sortMethod}`;
+  //const url = `/data?pageNumber=${pageNumber}&commentLimit=${commentLimit}`
+  //      url += `&sortDirection=${sortDirection}`; //80 char limit
+  var url =  "/data?".concat(`pageNumber=${pageNumber}`,
+                            `&commentLimit=${commentLimit}`,
+                            `&sortDirection=${sortDirection}`);
+  console.log(url);
   fetch(url).then(response => response.json()).then((quote) => {
     const messageContainerDiv = document.getElementById("message-container");
-    quote.forEach(comment => messageContainerDiv.appendChild(createMessageElements(comment)));
+    quote.forEach(comment => messageContainerDiv
+                            .appendChild(createMessageElements(comment)));
   });
 }
 
@@ -107,15 +113,16 @@ function deleteComment(comment) {
 /**
  * Basic test to check well typed and apply some bounds
  */
-function isValidNumInp(numberInp) {
-  const isValidInp = !isNaN(numberInp);
-  return isValidInp && (parseInt(numberInp) > 0 && parseInt(numberInp) < 1000);
+function isValidIntInput(intInput) {
+  const isValidInput = !isNaN(intInput);
+  return isValidInput && (parseInt(intInput) > 0 && parseInt(intInput) < 1000);
 }
 
 function getCommentLimit() {
   let pageParams = (new URL(document.location)).searchParams;
   let commentLimit = pageParams.get("commentLimit");
-  if(!isValidNumInp(commentLimit) || !commentLimit || commentLimit.length == 0){
+  if(!isValidIntInput(commentLimit) || !commentLimit 
+                                    || commentLimit.length == 0){
     commentLimit = "5"; //reset to some default if malformed input
   }
   //update the text box to display the amount after refresh 
@@ -123,16 +130,16 @@ function getCommentLimit() {
   return commentLimit;
 }
 
-function getSortMethod() {
-  var sortMethodOptions = document.getElementById("sortMethod");
-  var sortMethod = sortMethodOptions.options[sortMethodOptions.selectedIndex].value;
+function getSortDirection() {
+  var sortDirectionOptions = document.getElementById("sortDirection");
+  var sortDirection = sortDirectionOptions.options[sortDirectionOptions
+                                                  .selectedIndex].value;
 
-
-  return sortMethod;
+  return sortDirection;
 }
 
-function applySortMethod() {
-  addMessage(0, getSortMethod());
+function applySortDirection() {
+  addMessage(0, getSortDirection());
 }
 
 addMessage();
