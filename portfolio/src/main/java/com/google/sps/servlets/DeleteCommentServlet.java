@@ -34,7 +34,12 @@ import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
+
+
 import com.google.sps.data.Comment;
+import com.google.sps.data.UserInfo;
 
 /** Servlet responsible for deleting comments. */
 @WebServlet("/delete-comment")
@@ -42,10 +47,28 @@ public class DeleteCommentServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    long id = Long.parseLong(request.getParameter("id"));
+    response.setContentType("application/json");
 
-    Key taskEntityKey = KeyFactory.createKey("Comment", id);
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    datastore.delete(taskEntityKey);
+    UserService userService = UserServiceFactory.getUserService();
+    UserInfo userInfo = new UserInfo();
+
+    if (userService.isUserLoggedIn()) {
+      long id = Long.parseLong(request.getParameter("id"));
+
+      Key taskEntityKey = KeyFactory.createKey("Comment", id);
+      DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+      datastore.delete(taskEntityKey);
+
+      userInfo.loggedIn = true;
+    } else {
+      String urlToRedirectToAfterUserLogsIn = "/index.html";
+      String loginUrl = userService.createLoginURL(urlToRedirectToAfterUserLogsIn);
+
+      userInfo.loggedIn = false;
+      userInfo.loginUrl = loginUrl;
+    }
+
+    String json = new Gson().toJson(userInfo);
+    response.getWriter().println(json);
   }
 }

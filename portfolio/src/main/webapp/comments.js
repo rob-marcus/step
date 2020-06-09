@@ -77,11 +77,11 @@ function createMessageElements(comment) {
   commentElement.innerText = `${comment.comment} posted at ${comment.timestamp}`;
 
   const deleteButtonElement = document.createElement("button");
+  deleteButtonElement.className = "delete-button";
   deleteButtonElement.innerText = "Delete comment";
   deleteButtonElement.addEventListener('click', () => {
     //remove from datastore and DOM
-    deleteComment(comment);
-    messageDiv.remove();
+    deleteComment(comment, messageDiv);
   });
 
   var likeAndButtonElements = document.createElement("div");
@@ -105,10 +105,19 @@ function createMessageElements(comment) {
   return messageDiv;
 }
 
-function deleteComment(comment) {
+function deleteComment(comment, messageDiv) {
   const params = new URLSearchParams();
   params.append('id', comment.id);
-  fetch('/delete-comment', {method: 'POST', body: params});
+  fetch('/delete-comment', {method: 'POST', body: params})
+  .then(response => response.json())
+  .then(userInfo => 
+  {
+    if (userInfo.loggedIn) {
+      messageDiv.remove();
+    } else {
+      window.location = userInfo.loginUrl;
+    }
+  });
 }
 /**
  * Basic test to check well typed and apply some bounds

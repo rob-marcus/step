@@ -12,10 +12,12 @@
   <body>
     <div id="header"></div>
     <div id="splash-tiles"></div>
+      <form id="log-in-out">
+      </form>
     <form action="/data" method="POST">
       <label for="comment-preface">Leave a comment!</label><br>
       <input type="text" id="comment" name="comment"></input><br> 
-      <input type="submit" class="submit"></input>
+      <input type="submit" class="submit" id="submit-comment"></input>
     </form>
     <form id="/numberComments" method="GET">
       <label for="commentLimit">Show this many comments:</label>
@@ -37,6 +39,7 @@
   <script src="splashPage.js"></script>
   <script src="repeatedElements.js"></script>
   <script src="comments.js"></script>
+  <script src="login.js"></script>
   <script type="text/javascript">
     header();
   </script>

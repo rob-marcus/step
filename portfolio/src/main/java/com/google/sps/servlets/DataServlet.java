@@ -33,8 +33,11 @@ import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.QueryResultList;
 
-import com.google.sps.data.Comment;
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
 
+import com.google.sps.data.Comment;
+import com.google.sps.data.UserInfo;
 
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
@@ -88,18 +91,25 @@ public class DataServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    String comment = getParameterOrDefault(request, "comment", /*default comment value=*/"");
-    long timestamp = System.currentTimeMillis();
-    
-    Entity commentEntity = new Entity("Comment");
-    commentEntity.setProperty("comment", comment);
-    commentEntity.setProperty("timestamp", timestamp);
-    
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    datastore.put(commentEntity);
+    UserService userService = UserServiceFactory.getUserService();
+    if (userService.isUserLoggedIn()) {
+      String comment = getParameterOrDefault(request, "comment", /*default comment value=*/"");
+      long timestamp = System.currentTimeMillis();
+      
+      Entity commentEntity = new Entity("Comment");
+      commentEntity.setProperty("comment", comment);
+      commentEntity.setProperty("timestamp", timestamp);
+      
+      DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+      datastore.put(commentEntity);
 
-    response.sendRedirect("/index.html");
-
+      response.sendRedirect("/index.html");
+    } else {
+      String urlToRedirectToAfterUserLogsIn = "index.html";
+      String loginUrl = userService.createLoginURL(urlToRedirectToAfterUserLogsIn);
+      
+      response.sendRedirect(loginUrl);
+    }
   }
 
   /*
