@@ -49,7 +49,7 @@ function pagination() {
       pageElement.href = "#";
       pageElement.addEventListener('click', () => {
         //load comments on pageNumber
-        addMessage(thisPageNumber, getSortMethod);
+        addMessage(thisPageNumber, getSortMethod());
       });
 
       paginationDiv.appendChild(pageElement);
@@ -61,16 +61,7 @@ function pagination() {
 /**
  * Using fetch request content from servlet and add to home page
  */
-function addMessage(pageNumber = 0, sortMethod = "DESCENDING") {
-  /**
-   * GET does not support additional URL params in the body
-   * So...
-   * A novel hack around this (rather than rewrite the GET logic)
-   * Is to just manually add the strings into the fetch url
-   * This 'works' because the java function getParameter 
-   * Will still parse a manually constructed URL string
-   * So...
-   */
+function addMessage(pageNumber = 0, sortMethod = "true") {
   const numShown = getCommentLimit();
   clearMessageDiv();
   const url = `/data?pageNumber=${pageNumber}&numShown=${numShown}&sortMethod=${sortMethod}`;
@@ -140,13 +131,14 @@ function getCommentLimit() {
 function getSortMethod() {
   var sortMethodOptions = document.getElementById("sortMethod");
   var sortMethod = sortMethodOptions.options[sortMethodOptions.selectedIndex].value;
+  //update select menu to reflect what has been chosen
   document.getElementById("sortMethod").value = sortMethod;
 
   return sortMethod;
 }
 
 function applySortMethod() {
-  addMessage(0, getSortMethod);
+  addMessage(0, getSortMethod());
 }
 
 addMessage();

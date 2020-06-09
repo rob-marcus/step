@@ -46,12 +46,12 @@ public class DataServlet extends HttpServlet {
     String defaultPageNumber = "0";
     int pageNumber = Integer.parseInt(getParameter(request, "pageNumber", defaultPageNumber));
 
-    String defaultSortMethod = "DESCENDING";
+    String defaultSortMethod = "true";
     String sortMethod = getParameter(request, "sortMethod", defaultSortMethod);
 
     Query query = new Query("Comment");
     
-    if (sortMethod.equals(defaultSortMethod)) {
+    if (Boolean.parseBoolean(sortMethod)) {
       query.addSort("timestamp", SortDirection.DESCENDING);
     } else {
       query.addSort("timestamp", SortDirection.ASCENDING);
