@@ -15,20 +15,10 @@
 // TODO: Rewrite with a general class to keep track of things more easily...
 
 /**
- * Clear the message div
+ * Erases all inner HTML content within message-container div
  */
 function clearMessageDiv() {
   document.getElementById("message-container").innerHTML = "";
-}
-
-
-/**
- * Return the TOTAL number of undeleted comments currently in datastore 
- */
-function numComments() {
-  (fetch('/num-comments').then(response => response.text()).then(num => {
-    return num;
-  }));
 }
 
 /**
@@ -37,7 +27,7 @@ function numComments() {
  */
 function pagination() {
   var commentLimit = getCommentLimit();
-  (fetch('/num-comments').then(response => response.text()).then(numComments =>
+  fetch('/num-comments').then(response => response.text()).then(numComments =>
   {
     var numPages = Math.ceil(numComments/commentLimit);
     var paginationDiv = document.getElementById("pagination");
@@ -54,7 +44,8 @@ function pagination() {
 
       paginationDiv.appendChild(pageElement);
     }
-  }));
+  })
+  .catch(error => {console.log("failed to get num comments, oops!");});
 }
 
 
