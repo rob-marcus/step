@@ -22,15 +22,14 @@ function clearMessageDiv() {
 }
 
 /**
- * Very basic pagination feature...
- * Needs to be refined to have an upper limit on number of page buttons
+ * Load comments page wise based on user selection 
  */
-function pagination() {
+function loadComments() {
   var commentLimit = getCommentLimit();
   fetch('/num-comments').then(response => response.text()).then(numComments =>
   {
     var numPages = Math.ceil(numComments/commentLimit);
-    var paginationDiv = document.getElementById("pagination");
+    var commentsDiv = document.getElementById("comments");
     for (var pageNumber = 0; pageNumber < numPages; pageNumber++) {
       const thisPageNumber = pageNumber;
 
@@ -42,7 +41,7 @@ function pagination() {
         addMessage(thisPageNumber, getSortMethod());
       });
 
-      paginationDiv.appendChild(pageElement);
+      commentsDiv.appendChild(pageElement);
     }
   })
   .catch(error => {console.log("failed to get num comments, oops!");});
@@ -139,4 +138,4 @@ function applySortMethod() {
 }
 
 addMessage();
-pagination();
+loadComments();
