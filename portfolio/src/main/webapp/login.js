@@ -12,17 +12,26 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-function toggleButton(button, parity) {
-  button.disabled = parity;
+/**
+ * Toggle a button to be disabled or not disabled
+ */
+function toggleButton(button, parityBool) {
+  button.disabled = parityBool;
 }
 
-function toggleButtons(buttons, parity) {
+/**
+ * Do toggleButton for all buttons in a class
+ */
+function toggleButtons(buttons, parityBool) {
   for (var buttonIndex = 0; buttonIndex < buttons.length; buttonIndex++) {
-    toggleButton(buttons.item(buttonIndex), parity);
+    toggleButton(buttons.item(buttonIndex), parityBool);
   }
 }
 
-
+/**
+ * Make sure user is logged in, and alter elements in the dom to be 
+ * responsive or not based on that. 
+ */
 function checkLogin() {
   fetch("/check-login").then(response => response.json()).then((userInfo) => {
     const submitCommentButton = document.getElementById("submit-comment");

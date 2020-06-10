@@ -113,7 +113,7 @@ function deleteComment(comment, messageDiv) {
   .then(userInfo => 
   {
     if (userInfo.loggedIn) {
-      messageDiv.remove();
+      messageDiv.remove(); //delete only possible with log in 
     } else {
       window.location = userInfo.loginUrl;
     }

@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import com.google.sps.data.UserInfo;
 
@@ -32,10 +33,12 @@ public class LoginServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    //response.setContentType("text/html");
+    response.setContentType("application/json");
+    
     UserInfo userInfo = new UserInfo();
     UserService userService = UserServiceFactory.getUserService();
 
+    //if logged in prepare log out response and such; else the opposite
     if (userService.isUserLoggedIn()) {
       String userEmail = userService.getCurrentUser().getEmail();
       String urlToRedirectToAfterUserLogsOut = "/index.html";
@@ -44,19 +47,15 @@ public class LoginServlet extends HttpServlet {
       userInfo.loggedIn = true;
       userInfo.logoutUrl = logoutUrl;
       userInfo.email = userEmail;
-
-      response.setContentType("application/json");
-      String json = new Gson().toJson(userInfo);
-      response.getWriter().println(json);
     } else {
       String urlToRedirectToAfterUserLogsIn = "/index.html";
       String loginUrl = userService.createLoginURL(urlToRedirectToAfterUserLogsIn);
       userInfo.loggedIn = false;
       userInfo.loginUrl = loginUrl;
-
-      String json = new Gson().toJson(userInfo);
-      response.getWriter().println(json);
     }
-
+    //GSON html-escapes by default so have to use this to bypass... 
+    Gson gson = new GsonBuilder().disableHtmlEscaping().create();
+    String json = gson.toJson(userInfo);
+    response.getWriter().println(json);
   }
 }
