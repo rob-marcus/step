@@ -144,9 +144,9 @@ function generateTiles(imgPrefix, tileIndexs, elId) {
 /**
  * Generate a flexbox for every set of tiles
  */
-function generateAllTiles(prefix, tilesJSON) {
-  for (x in TILES) {
-    generateTiles(prefix, tilesJSON[x], x);
+function generateAllTiles(prefix, tilesJson) {
+  for (tile in tilesJson) {
+    generateTiles(prefix, tilesJSON[tile], tile);
   }
 }
 

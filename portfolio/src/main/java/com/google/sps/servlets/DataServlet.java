@@ -30,38 +30,54 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
+import com.google.appengine.api.datastore.FetchOptions;
+import com.google.appengine.api.datastore.QueryResultList;
 
 import com.google.sps.data.Comment;
 
+import org.apache.commons.lang3.BooleanUtils; 
 
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
   
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    Query query = new Query("Comment").addSort("timestamp", SortDirection.DESCENDING);
+    int defaultCommentLimit = 5;
+    int commentLimit = getPositiveInputOrDefault(request, "commentLimit", defaultCommentLimit);
 
+    int defaultPageNumber = 0;
+    int pageNumber = getIntInputOrDefault(request, "pageNumber", defaultPageNumber);
+
+    Boolean sortDescending = getBoolInputOrDefault(request, "sortDirection", true);
+
+    Query query = new Query("Comment");
+    
+    if (sortDescending) {
+      query.addSort("timestamp", SortDirection.DESCENDING);
+    } else {
+      query.addSort("timestamp", SortDirection.ASCENDING);
+    }
+    
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    PreparedQuery results = datastore.prepare(query);
 
-    ArrayList<Comment> comments = new ArrayList<>();
-    String defaultCommentLimit = "5";
-    int commentLimit = Integer.parseInt(getParameter(request, "numShown",
-                                                    "5"));
-    int count = 0;
+    int startingIndex = pageNumber * commentLimit;
 
-    for (Entity entity : results.asIterable()) {
+    List<Entity> resultsList = datastore.prepare(query)
+                                        .asList(FetchOptions.Builder
+                                        .withLimit(startingIndex + commentLimit));
+
+    int endingIndex = Math.min(startingIndex + commentLimit, resultsList.size());
+
+    List<Comment> comments = new ArrayList<>();
+
+    for (int currIndex = startingIndex; currIndex < endingIndex; currIndex++) {
+      Entity entity = resultsList.get(currIndex);
       long id = entity.getKey().getId();
       String comment = (String) entity.getProperty("comment");
       long timestamp = (long) entity.getProperty("timestamp");
 
       Comment newComment = new Comment(id, comment, timestamp);
       comments.add(newComment);
-
-      count++;
-      if(count == commentLimit) {
-        break;
-      }
     }
 
     String convertedJSON = new Gson().toJson(comments);
@@ -72,7 +88,7 @@ public class DataServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    String comment = getParameter(request, "comment", /*default comment value=*/"");
+    String comment = getParameterOrDefault(request, "comment", /*default comment value=*/"");
     long timestamp = System.currentTimeMillis();
     
     Entity commentEntity = new Entity("Comment");
@@ -83,19 +99,55 @@ public class DataServlet extends HttpServlet {
     datastore.put(commentEntity);
 
     response.sendRedirect("/index.html");
-
   }
 
   /*
-   * Gets page input; lifted from TextProcessorServlet.java example
+   * Get corresponding parameter value or return default if not present.
    */
-  private String getParameter(HttpServletRequest request, String name, String defaultValue) {
+  private String getParameterOrDefault(HttpServletRequest request, String name, String defaultValue) {
     String value = request.getParameter(name);
     if (value == null) {
-
       return defaultValue;
     }
     return value;
+  }
+
+  /*
+   * Return a strictly positive integer from a url parameter, or defaultValue if not present
+   * If defaultValue and the requested value are not positive, 1 will be returned. 
+   */
+  private int getPositiveInputOrDefault(HttpServletRequest request, String name, int defaultValue) {
+    int value = getIntInputOrDefault(request, name, defaultValue);
+    if (value < 1) {
+      //additional guarantee that defaultValue is also positive...
+      return defaultValue > 0 ? defaultValue : 1;
+    }
+    return value;
+  }
+
+  /*
+   * Return an integer in the url parameter, or defaultValue if not present
+   */ 
+  private int getIntInputOrDefault(HttpServletRequest request, String name, int defaultValue) {
+    try {
+      int inputValue = Integer.parseInt(getParameterOrDefault(request, name, 
+                            Integer.toString(defaultValue)));
+      return inputValue;
+    } catch (NumberFormatException nfe) {
+      return defaultValue;
+    }
+  }
+
+  /* 
+   * Returns a boolean in the url parameter, or defaultValue if not present
+   */
+  private Boolean getBoolInputOrDefault(HttpServletRequest request, String name, Boolean defaultValue) {
+    Boolean sortDescending = BooleanUtils.toBooleanObject(getParameterOrDefault(request, name, 
+                                  Boolean.toString(defaultValue)));
+    if (sortDescending == null) {
+      return defaultValue;
+    }
+    return sortDescending;
   }
 
   /*
@@ -107,18 +159,5 @@ public class DataServlet extends HttpServlet {
     String json = gson.toJson(stringArray);
     return json;
   }
-
-  /*
-   * Get num comments to show at any given time
-   */
-   private int getCommentLimit(HttpServletRequest request) {
-     String numShown = request.getParameter("numShown");
-     if (numShown == null) {
-       return 5;
-     }
-     else {
-       return Integer.parseInt(numShown);
-     }
-   }
 }
 
