@@ -35,21 +35,21 @@ import com.google.appengine.api.datastore.QueryResultList;
 
 import com.google.sps.data.Comment;
 
+import org.apache.commons.lang3.BooleanUtils; 
 
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
   
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    String defaultCommentLimit = "5";
-    int commentLimit = getPositiveIntInputOrDefault(request, "commentLimit", defaultCommentLimit);
+    int defaultCommentLimit = 5;
+    int commentLimit = getPositiveInputOrDefault(request, "commentLimit", defaultCommentLimit);
 
-    String defaultPageNumber = "0";
+    int defaultPageNumber = 0;
     int pageNumber = getIntInputOrDefault(request, "pageNumber", defaultPageNumber);
 
-    Boolean sortDescending = Boolean.parseBoolean
-                                    (getParameterOrDefault(request, "sortDirection", "true"));
-                                     
+    Boolean sortDescending = getBoolInputOrDefault(request, "sortDirection", true);
+
     Query query = new Query("Comment");
     
     if (sortDescending) {
@@ -99,11 +99,10 @@ public class DataServlet extends HttpServlet {
     datastore.put(commentEntity);
 
     response.sendRedirect("/index.html");
-
   }
 
   /*
-   * Gets page input; lifted from TextProcessorServlet.java example
+   * Get corresponding parameter value or return default if not present.
    */
   private String getParameterOrDefault(HttpServletRequest request, String name, String defaultValue) {
     String value = request.getParameter(name);
@@ -115,23 +114,40 @@ public class DataServlet extends HttpServlet {
 
   /*
    * Return a strictly positive integer from a url parameter, or defaultValue if not present
-   * Note: assumes defaultValue is strictly positive
+   * If defaultValue and the requested value are not positive, 1 will be returned. 
    */
-  private int getPositiveIntInputOrDefault(HttpServletRequest request, String name, String defaultValue) {
+  private int getPositiveInputOrDefault(HttpServletRequest request, String name, int defaultValue) {
     int value = getIntInputOrDefault(request, name, defaultValue);
-    return value > 0 ? value : Integer.parseInt(defaultValue);
+    if (value < 1) {
+      //additional guarantee that defaultValue is also positive...
+      return defaultValue > 0 ? defaultValue : 1;
+    }
+    return value;
   }
 
   /*
    * Return an integer in the url parameter, or defaultValue if not present
    */ 
-  private int getIntInputOrDefault(HttpServletRequest request, String name, String defaultValue) {
+  private int getIntInputOrDefault(HttpServletRequest request, String name, int defaultValue) {
     try {
-      int inputValue = Integer.parseInt(getParameterOrDefault(request, name, defaultValue));
+      int inputValue = Integer.parseInt(getParameterOrDefault(request, name, 
+                            Integer.toString(defaultValue)));
       return inputValue;
     } catch (NumberFormatException nfe) {
-      return Integer.parseInt(defaultValue);
+      return defaultValue;
     }
+  }
+
+  /* 
+   * Returns a boolean in the url parameter, or defaultValue if not present
+   */
+  private Boolean getBoolInputOrDefault(HttpServletRequest request, String name, Boolean defaultValue) {
+    Boolean sortDescending = BooleanUtils.toBooleanObject(getParameterOrDefault(request, name, 
+                                  Boolean.toString(defaultValue)));
+    if (sortDescending == null) {
+      return defaultValue;
+    }
+    return sortDescending;
   }
 
   /*
