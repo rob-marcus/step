@@ -53,8 +53,7 @@ function loadComments() {
 function addMessage(pageNumber = 0, sortDirection = "true") {
   const commentLimit = getCommentLimit();
   clearMessageDiv();
-  //const url = `/data?pageNumber=${pageNumber}&commentLimit=${commentLimit}`
-  //      url += `&sortDirection=${sortDirection}`; //80 char limit
+
   var url =  "/data?".concat(`pageNumber=${pageNumber}`,
                             `&commentLimit=${commentLimit}`,
                             `&sortDirection=${sortDirection}`);
@@ -110,19 +109,20 @@ function deleteComment(comment) {
   params.append('id', comment.id);
   fetch('/delete-comment', {method: 'POST', body: params});
 }
+
 /**
  * Basic test to check well typed and apply some bounds
  */
-function isValidIntInput(intInput) {
-  const isValidInput = !isNaN(intInput);
-  return isValidInput && (parseInt(intInput) > 0 && parseInt(intInput) < 1000);
+function isWithinBounds(number, lo, hi) {
+    return !isNaN(number) && parseInt(number) > lo && parseInt(number) < hi; 
 }
 
 function getCommentLimit() {
   let pageParams = (new URL(document.location)).searchParams;
   let commentLimit = pageParams.get("commentLimit");
-  if(!isValidIntInput(commentLimit) || !commentLimit 
-                                    || commentLimit.length == 0){
+  const hiBound = 1000;
+  if(!commentLimit || commentLimit.length == 0 || 
+      !isWithinBounds(commentLimit, 0, hiBound)) {
     commentLimit = "5"; //reset to some default if malformed input
   }
   //update the text box to display the amount after refresh 
@@ -132,8 +132,8 @@ function getCommentLimit() {
 
 function getSortDirection() {
   var sortDirectionOptions = document.getElementById("sortDirection");
-  var sortDirection = sortDirectionOptions.options[sortDirectionOptions
-                                                  .selectedIndex].value;
+  var sortDirection = 
+      sortDirectionOptions.options[sortDirectionOptions.selectedIndex].value;
 
   return sortDirection;
 }
