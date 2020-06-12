@@ -31,6 +31,12 @@ import javax.servlet.http.HttpServletResponse;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Whitelist;
 
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
+
+import com.google.sps.data.Comment;
+import com.google.sps.data.UserInfo;
+
 /** Handles fetching and saving markers data. */
 @WebServlet("/markers")
 public class MarkerServlet extends HttpServlet {
@@ -50,12 +56,17 @@ public class MarkerServlet extends HttpServlet {
   /** Accepts a POST request containing a new marker. */
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) {
-    double lat = Double.parseDouble(request.getParameter("lat"));
-    double lng = Double.parseDouble(request.getParameter("lng"));
-    String content = Jsoup.clean(request.getParameter("content"), Whitelist.none());
+    UserService userService = UserServiceFactory.getUserService();
+    if (userService.isUserLoggedIn()){
+      double lat = Double.parseDouble(request.getParameter("lat"));
+      double lng = Double.parseDouble(request.getParameter("lng"));
+      String content = Jsoup.clean(request.getParameter("content"), Whitelist.none());
 
-    Marker marker = new Marker(lat, lng, content);
-    storeMarker(marker);
+      Marker marker = new Marker(lat, lng, content);
+      storeMarker(marker);
+    } else {
+      System.out.println("Not logged in but tried to add a marker");
+    }
   }
 
   /** Fetches markers from Datastore. */

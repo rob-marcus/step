@@ -119,7 +119,16 @@ function createMap() {
   // When the user clicks in the map, show a marker with a text box the user can
   // edit.
   map.addListener('click', (event) => {
-    createMarkerForEdit(event.latLng.lat(), event.latLng.lng());
+    fetch('/check-login')
+    .then(response => response.json())
+    .then(userInfo => 
+    {
+      if(userInfo.loggedIn) {
+        createMarkerForEdit(event.latLng.lat(), event.latLng.lng());
+      } else {
+        window.location = userInfo.loginUrl;
+      }
+    })
   });
 
   fetchMarkers();
