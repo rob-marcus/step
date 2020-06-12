@@ -4,9 +4,13 @@
     <meta charset="UTF-8">
     <title>ROB MARCUS x TRAVEL</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="mapStyle.css">
+
     <link rel="icon" 
       type="image/ico" 
       href="images/favicon.ico">
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCdwNBkRmx1Un1rLXt4FdnXWfCx4RNtgEU"></script>
+
   </head>
 
   <body>
@@ -32,18 +36,21 @@
         night. I also travelled up the Mekong river system over three months 
         as a student on a cultural immersion trip, which was more exotic but 
         a lot less dangerous.</p>
-      <div id="tiles3"></div>
+      <div id="tiles3"></div> 
+        <p>Have any travel ideas? Drop a pin to let me know!</p>
+      <div id="map"></div>   
     </div>
-
     <div id="footer"></div>
 
-  <script src="repeatedElements.js"></script>
-  <script type = "text/javascript">
-    const TILES = {"tiles1":[2,4,0],"tiles2":[3,6,1],"tiles3":[5,7]};
-    const PREFIX = "travel";
+    <script src="repeatedElements.js"></script>
+    <script type="text/javascript">
+      const TILES = {"tiles1":[2,4,0],"tiles2":[3,6,1],"tiles3":[5,7]};
+      const PREFIX = "travel";
 
-    generateAllTiles(PREFIX, TILES);
-    header(PREFIX);
-  </script>
+      generateAllTiles(PREFIX, TILES);
+      header(PREFIX);
+    </script>
+    <script src="maps.js"></script>
+
   </body>
 </html>
