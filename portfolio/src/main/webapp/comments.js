@@ -51,7 +51,7 @@ function loadComments() {
  * Using fetch request content from servlet and add to home page
  */
 function addMessage(pageNumber = 0, sortMethod = {"feature": "timestamp", 
-                                                  "direction": "DESCENDING"}) 
+                                                  "direction": "true"}) 
 {
   const commentLimit = getCommentLimit();
   clearMessageDiv();
@@ -60,6 +60,7 @@ function addMessage(pageNumber = 0, sortMethod = {"feature": "timestamp",
               `commentLimit=${commentLimit}`,
               `sortFeature=${sortMethod.feature}`,
               `sortDirection=${sortMethod.direction}`].join("&");
+  console.log(url);
 
   fetch(url).then(response => response.json()).then((quote) => {
     const messageContainerDiv = document.getElementById("message-container");

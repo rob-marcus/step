@@ -27,10 +27,10 @@
       <form>
         <label for="sortMethod">Sort:</label>
         <select id="sortMethod" onchange="applySortMethod()">
-          <option value="timestamp DESCENDING" selected="selected">Time (newest)</option>
-          <option value="timestamp ASCENDING">Time (oldest)</option>
-          <option value="upvotes DESCENDING">Most popular</option>
-          <option value="upvotes ASCENDING">Least popular</option>
+          <option value="timestamp true" selected="selected">Time (newest)</option>
+          <option value="timestamp false">Time (oldest)</option>
+          <option value="upvoteCount true">Most popular</option>
+          <option value="upvoteCount false">Least popular</option>
         </select>
       </form>
 
