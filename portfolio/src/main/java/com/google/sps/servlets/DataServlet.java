@@ -49,8 +49,8 @@ public class DataServlet extends HttpServlet {
     int pageNumber = getIntInputOrDefault(request, "pageNumber", defaultPageNumber);
     
     String defaultSortFeature = "timestamp";
-    String sortFeature = getParameterOrDefault(request, "sortFeature", defaultSortFeature);
-    System.out.println(sortFeature);
+    String sortFeature = getSortFeature(request, "sortFeature"); 
+
     Boolean sortDescending = getBoolInputOrDefault(request, "sortDirection", true);
     
     Query query = new Query("Comment");
@@ -116,6 +116,20 @@ public class DataServlet extends HttpServlet {
       return defaultValue;
     }
     return value;
+  }
+  /*
+   * Only return a valid sortFeature...
+   */ 
+  private String getSortFeature(HttpServletRequest request, String name) {
+    String sortFeatureOne = "timestamp";
+    String sortFeatureTwo = "upvoteCount";
+
+    String sortFeature = getParameterOrDefault(request, name, sortFeatureOne);
+    if (sortFeature.equals(sortFeatureOne) || sortFeature.equals(sortFeatureTwo)) {
+      return sortFeature;
+    } else {
+      return sortFeatureOne;
+    }
   }
 
   /*

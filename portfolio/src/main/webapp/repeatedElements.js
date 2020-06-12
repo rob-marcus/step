@@ -146,7 +146,7 @@ function generateTiles(imgPrefix, tileIndexs, elId) {
  */
 function generateAllTiles(prefix, tilesJson) {
   for (tile in tilesJson) {
-    generateTiles(prefix, tilesJSON[tile], tile);
+    generateTiles(prefix, tilesJson[tile], tile);
   }
 }
 
