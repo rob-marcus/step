@@ -12,19 +12,19 @@
   <body>
     <div id="header"></div>
     <div id="splash-tiles"></div>
-
-    <div id="comments-container">
+    <div class="content">
       <form action="/data" method="POST">
-        <label for="comment-preface">Leave a comment!</label><br>
-        <input type="text" id="comment" name="comment"></input><br> 
+        <!-- <label for="comment-preface">Leave a comment!</label><br>
+        <!-- <input type="text" id="comment" name="comment"></input><br> --> 
+        <textarea placeholder="Write your comment here" id="comment" name="comment"></textarea>
         <input type="submit" class="submit"></input>
       </form>
-      <form id="/numberComments" method="GET">
-        <label for="numShown">Show this many comments:</label>
-        <input type="number" name="numShown" id="numShown" min=1 step=1></input>
+      <form method="GET">
+        <label for="commentLimit">Show this many comments:</label>
+        <input type="number" name="commentLimit" id="commentLimit" min=1 step=1></input>
         <input type="submit" class="submit" value="Show"></input>
       </form>
-      <form id="sortComments">
+      <form>
         <label for="sortMethod">Sort:</label>
         <select id="sortMethod" onchange="applySortMethod()">
           <option value="timestamp DESCENDING" selected="selected">Time (newest)</option>
@@ -35,9 +35,8 @@
       </form>
 
       <div id="message-container"></div>
-      <div id="pagination"></div>
+      <div id="comments"></div>
     </div>
-
     <div id="footer"></div>
   <script src="splashPage.js"></script>
   <script src="repeatedElements.js"></script>

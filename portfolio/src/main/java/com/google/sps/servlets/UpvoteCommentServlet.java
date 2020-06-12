@@ -43,17 +43,17 @@ public class UpvoteCommentServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     long id = Long.parseLong(request.getParameter("id"));
-    long upvotes = Long.parseLong(request.getParameter("upvotes"));
-    long timestamp = Long.parseLong(request.getParameter("timestamp"));
-    String comment = request.getParameter("comment");
+    long upvotes = Long.parseLong(request.getParameter("upvoteCount"));
 
     Key commentEntityKey = KeyFactory.createKey("Comment", id);
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    
     try {
       Entity upvotedComment = datastore.get(commentEntityKey);
-      upvotedComment.setProperty("upvotes", upvotes);
+      upvotedComment.setProperty("upvoteCount", upvotes);
       datastore.put(upvotedComment);
     } catch (com.google.appengine.api.datastore.EntityNotFoundException enfe) {
+      
       //if comment doesn't exist don't upvote but print out the supposed ID...
       System.out.println("failed to upvote comm ent with id" + id);
     }

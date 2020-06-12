@@ -43,7 +43,7 @@ function loadComments() {
       commentsDiv.appendChild(pageElement);
     }
   })
-  .catch(error => {console.log("failed to get num comments, oops!");});
+  .catch(error => {console.log("failed to get num comments, oops!" + error);});
 }
 
 
@@ -88,7 +88,8 @@ function createMessageElements(comment) {
 
   var upvoteAndButtonElements = document.createElement("div");
   var upvoteElement = document.createElement("p");
-  var numUpvotes = Comment.upvotes;
+  var numUpvotes = comment.upvoteCount;
+  console.log(numUpvotes);
   upvoteElement.innerText = numUpvotes.toString() + " upvotes";
 
   var upvoteButtonElement = document.createElement("button");
@@ -96,7 +97,7 @@ function createMessageElements(comment) {
   upvoteButtonElement.addEventListener('click', () => {
     numUpvotes++;
     upvoteElement.innerText = numUpvotes + " upvotes";
-    upvoteComment(Comment);
+    upvoteComment(comment);
   });
 
   upvoteAndButtonElements.appendChild(upvoteElement);
@@ -114,14 +115,12 @@ function deleteComment(comment) {
   fetch('/delete-comment', {method: 'POST', body: params});
 }
 
-function upvoteComment(Comment) {
+function upvoteComment(comment) {
   const params = new URLSearchParams(); 
-  params.append('id', Comment.id);
-  params.append('upvotes', Comment.upvotes + 1)
-  params.append('comment', Comment.comment);
-  params.append('timestamp', Comment.timestamp)
+  params.append('id', comment.id);
+  params.append('upvoteCount', comment.upvoteCount + 1)
   fetch("/upvote-comment", {method: 'POST', body: params});
-
+}
 /**
  * Basic test to check well typed and apply some bounds
  */
