@@ -33,6 +33,8 @@ import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.api.datastore.FetchOptions;
+
 
 import com.google.sps.data.Comment;
 
@@ -51,7 +53,7 @@ public class NumCommentsServlet extends HttpServlet {
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     PreparedQuery results = datastore.prepare(query);
-    int numComments = results.countEntities(); //technically deprecated
+    int numComments = results.countEntities(FetchOptions.Builder.withDefaults()); 
 
     response.setContentType("text/html;");
     response.getWriter().println(numComments);

@@ -31,57 +31,55 @@ import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.appengine.api.datastore.FetchOptions;
+import com.google.appengine.api.datastore.QueryResultList;
 
 import com.google.sps.data.Comment;
 
+import org.apache.commons.lang3.BooleanUtils; 
 
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
   
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    String defaultCommentLimit = "5";
-    int commentLimit = Integer.parseInt(getParameter(request, "numShown", defaultCommentLimit));
+    int defaultCommentLimit = 5;
+    int commentLimit = getPositiveInputOrDefault(request, "commentLimit", defaultCommentLimit);
 
-    String defaultPageNumber = "0";
-    int pageNumber = Integer.parseInt(getParameter(request, "pageNumber", defaultPageNumber));
-
-    String defaultSortDirection = "DESCENDING";
-    String sortDirection = getParameter(request, "sortDirection", defaultSortDirection);
-
+    int defaultPageNumber = 0;
+    int pageNumber = getIntInputOrDefault(request, "pageNumber", defaultPageNumber);
+    
     String defaultSortFeature = "timestamp";
     String sortFeature = getParameter(request, "sortFeature", defaultSortFeature);
-
-    Query query = new Query("Comment");
     
-    if (sortDirection.equals(defaultSortDirection)) {
+    Boolean sortDescending = getBoolInputOrDefault(request, "sortDirection", true);
+
+    if (sortDescending) {
       query.addSort(sortFeature, SortDirection.DESCENDING);
     } else {
       query.addSort(sortFeature, SortDirection.ASCENDING);
     }
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    PreparedQuery results = datastore.prepare(query);
     
-
-    ArrayList<Comment> comments = new ArrayList<>();
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
     int startingIndex = pageNumber * commentLimit;
-    int count = 0;
 
-    for (Entity entity : results.asIterable()) {
-      if (count >= startingIndex) {
-        long id = entity.getKey().getId();
-        String comment = (String) entity.getProperty("comment");
-        long timestamp = (long) entity.getProperty("timestamp");
-        long upvotes = (long) entity.getProperty("upvotes");
+    List<Entity> resultsList = datastore.prepare(query)
+                                        .asList(FetchOptions.Builder
+                                        .withLimit(startingIndex + commentLimit));
 
-        Comment newComment = new Comment(id, comment, timestamp, upvotes);
-        comments.add(newComment);
-      }
-      count++;
-      if(count == startingIndex + commentLimit) {
-        break;
-      }
+    int endingIndex = Math.min(startingIndex + commentLimit, resultsList.size());
+
+    List<Comment> comments = new ArrayList<>();
+
+    for (int currIndex = startingIndex; currIndex < endingIndex; currIndex++) {
+      Entity entity = resultsList.get(currIndex);
+      long id = entity.getKey().getId();
+      String comment = (String) entity.getProperty("comment");
+      long timestamp = (long) entity.getProperty("timestamp");
+
+      Comment newComment = new Comment(id, comment, timestamp);
+      comments.add(newComment);
+>>>>>>> master
     }
 
     String convertedJSON = new Gson().toJson(comments);
@@ -92,7 +90,7 @@ public class DataServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    String comment = getParameter(request, "comment", /*default comment value=*/"");
+    String comment = getParameterOrDefault(request, "comment", /*default comment value=*/"");
     long timestamp = System.currentTimeMillis();
     long upvotes = Long.valueOf(1);
     
@@ -105,18 +103,55 @@ public class DataServlet extends HttpServlet {
     datastore.put(commentEntity);
 
     response.sendRedirect("/index.html");
-
   }
 
   /*
-   * Gets page input; lifted from TextProcessorServlet.java example
+   * Get corresponding parameter value or return default if not present.
    */
-  private String getParameter(HttpServletRequest request, String name, String defaultValue) {
+  private String getParameterOrDefault(HttpServletRequest request, String name, String defaultValue) {
     String value = request.getParameter(name);
     if (value == null) {
       return defaultValue;
     }
     return value;
+  }
+
+  /*
+   * Return a strictly positive integer from a url parameter, or defaultValue if not present
+   * If defaultValue and the requested value are not positive, 1 will be returned. 
+   */
+  private int getPositiveInputOrDefault(HttpServletRequest request, String name, int defaultValue) {
+    int value = getIntInputOrDefault(request, name, defaultValue);
+    if (value < 1) {
+      //additional guarantee that defaultValue is also positive...
+      return defaultValue > 0 ? defaultValue : 1;
+    }
+    return value;
+  }
+
+  /*
+   * Return an integer in the url parameter, or defaultValue if not present
+   */ 
+  private int getIntInputOrDefault(HttpServletRequest request, String name, int defaultValue) {
+    try {
+      int inputValue = Integer.parseInt(getParameterOrDefault(request, name, 
+                            Integer.toString(defaultValue)));
+      return inputValue;
+    } catch (NumberFormatException nfe) {
+      return defaultValue;
+    }
+  }
+
+  /* 
+   * Returns a boolean in the url parameter, or defaultValue if not present
+   */
+  private Boolean getBoolInputOrDefault(HttpServletRequest request, String name, Boolean defaultValue) {
+    Boolean sortDescending = BooleanUtils.toBooleanObject(getParameterOrDefault(request, name, 
+                                  Boolean.toString(defaultValue)));
+    if (sortDescending == null) {
+      return defaultValue;
+    }
+    return sortDescending;
   }
 
   /*
@@ -128,7 +163,5 @@ public class DataServlet extends HttpServlet {
     String json = gson.toJson(stringArray);
     return json;
   }
-
-
 }
 
