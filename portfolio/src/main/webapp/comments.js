@@ -12,35 +12,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// TODO: Rewrite with a general class to keep track of things more easily...
 
 /**
- * Clear the message div
+ * Erases all inner HTML content within message-container div
  */
 function clearMessageDiv() {
   document.getElementById("message-container").innerHTML = "";
 }
 
-
 /**
- * Return the TOTAL number of undeleted comments currently in datastore 
+ * Load comments page wise based on user selection 
  */
-function numComments() {
-  (fetch('/num-comments').then(response => response.text()).then(num => {
-    return num;
-  }));
-}
-
-/**
- * Very basic pagination feature...
- * Needs to be refined to have an upper limit on number of page buttons
- */
-function pagination() {
-  var numShown = getCommentLimit();
-  (fetch('/num-comments').then(response => response.text()).then(numComments =>
+function loadComments() {
+  var commentLimit = getCommentLimit();
+  fetch('/num-comments').then(response => response.text()).then(numComments =>
   {
-    var numPages = Math.ceil(numComments/numShown);
-    var paginationDiv = document.getElementById("pagination");
+    var numPages = Math.ceil(numComments/commentLimit);
+    var commentsDiv = document.getElementById("comments");
     for (var pageNumber = 0; pageNumber < numPages; pageNumber++) {
       const thisPageNumber = pageNumber;
 
@@ -52,9 +40,10 @@ function pagination() {
         addMessage(thisPageNumber, getSortMethod());
       });
 
-      paginationDiv.appendChild(pageElement);
+      commentsDiv.appendChild(pageElement);
     }
-  }));
+  })
+  .catch(error => {console.log("failed to get num comments, oops!");});
 }
 
 
@@ -62,27 +51,21 @@ function pagination() {
  * Using fetch request content from servlet and add to home page
  */
 function addMessage(pageNumber = 0, sortMethod = {"feature": "timestamp", 
-                                                  "direction": "DESCENDING"})
+                                                  "direction": "true"}) 
 {
-  /**
-   * GET does not support additional URL params in the body
-   * So...
-   * A novel hack around this (rather than rewrite the GET logic)
-   * Is to just manually add the strings into the fetch url
-   * This 'works' because the java function getParameter 
-   * Will still parse a manually constructed URL string
-   * So...
-   */
-  const numShown = getCommentLimit();
+  const commentLimit = getCommentLimit();
   clearMessageDiv();
+
   const url = [`/data?pageNumber=${pageNumber}`,
-              `&numShown=${numShown}`,
-              `&sortFeature=${sortMethod.feature}`,
-              `&sortDirection=${sortMethod.direction}`].join("");
+              `commentLimit=${commentLimit}`,
+              `sortFeature=${sortMethod.feature}`,
+              `sortDirection=${sortMethod.direction}`].join("&");
+  console.log(url);
 
   fetch(url).then(response => response.json()).then((quote) => {
     const messageContainerDiv = document.getElementById("message-container");
-    quote.forEach(Comment => messageContainerDiv.appendChild(createMessageElements(Comment)));
+    quote.forEach(comment => messageContainerDiv
+                            .appendChild(createMessageElements(comment)));
   });
 }
 
@@ -90,17 +73,17 @@ function addMessage(pageNumber = 0, sortMethod = {"feature": "timestamp",
  * Build the elements of an individual message using JSON data
  * Also create a delete button
  */
-function createMessageElements(Comment) {
+function createMessageElements(comment) {
   var messageDiv = document.createElement("div");
   messageDiv.className = "message-box";
   var commentElement = document.createElement("p");
-  commentElement.innerText = `${Comment.comment} posted at ${Comment.timestamp}`;
+  commentElement.innerText = `${comment.comment} posted at ${comment.timestamp}`;
 
   const deleteButtonElement = document.createElement("button");
   deleteButtonElement.innerText = "Delete comment";
   deleteButtonElement.addEventListener('click', () => {
     //remove from datastore and DOM
-    deleteComment(Comment);
+    deleteComment(comment);
     messageDiv.remove();
   });
 
@@ -126,9 +109,9 @@ function createMessageElements(Comment) {
   return messageDiv;
 }
 
-function deleteComment(Comment) {
+function deleteComment(comment) {
   const params = new URLSearchParams();
-  params.append('id', Comment.id);
+  params.append('id', comment.id);
   fetch('/delete-comment', {method: 'POST', body: params});
 }
 
@@ -140,16 +123,25 @@ function upvoteComment(Comment) {
   params.append('timestamp', Comment.timestamp)
   fetch("/upvote-comment", {method: 'POST', body: params});
 }
+  
+/**
+ * Basic test to check well typed and apply some bounds
+ */
+function isWithinBounds(number, lo, hi) {
+    return !isNaN(number) && parseInt(number) > lo && parseInt(number) < hi; 
+}
 
 function getCommentLimit() {
-  let tmp = (new URL(document.location)).searchParams;
-  let res = tmp.get("numShown");
-  if(!res || res.length == 0){
-    res = "5";
+  let pageParams = (new URL(document.location)).searchParams;
+  let commentLimit = pageParams.get("commentLimit");
+  const hiBound = 1000;
+  if(!commentLimit || commentLimit.length == 0 || 
+      !isWithinBounds(commentLimit, 0, hiBound)) {
+    commentLimit = "5"; //reset to some default if malformed input
   }
   //update the text box to display the amount after refresh 
-  document.getElementById("numShown").value = parseInt(res);
-  return res;
+  document.getElementById("commentLimit").value = parseInt(commentLimit);
+  return commentLimit;
 }
 
 function getSortMethod() {
@@ -166,4 +158,4 @@ function applySortMethod() {
 }
 
 addMessage();
-pagination();
+loadComments();
