@@ -23,10 +23,12 @@ public final class Comment {
   private final long id;
   private final String comment;
   private final long timestamp;
-
-  public Comment(long id, String comment, long timestamp) {
+  private final long upvoteCount; 
+  
+  public Comment(long id, String comment, long timestamp, long upvoteCount) {
     this.id = id;
     this.comment = comment;
     this.timestamp = timestamp;
+    this.upvoteCount = upvoteCount; 
   }
 }
