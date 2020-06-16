@@ -21,14 +21,14 @@ function clearMessageDiv() {
 }
 
 /**
- * Load comments page wise based on user selection 
+ * Load more comments page wise based on user selection 
  */
-function loadComments() {
+function moreComments() {
   var commentLimit = getCommentLimit();
   fetch('/num-comments').then(response => response.text()).then(numComments =>
   {
     var numPages = Math.ceil(numComments/commentLimit);
-    var commentsDiv = document.getElementById("comments");
+    var moreCommentsDiv = document.getElementById("more-comments");
     for (var pageNumber = 0; pageNumber < numPages; pageNumber++) {
       const thisPageNumber = pageNumber;
 
@@ -40,7 +40,7 @@ function loadComments() {
         addMessage(thisPageNumber, getSortMethod());
       });
 
-      commentsDiv.appendChild(pageElement);
+      moreCommentsDiv.appendChild(pageElement);
     }
   })
   .catch(error => {console.log("failed to get num comments, oops!" + error);});
@@ -60,7 +60,6 @@ function addMessage(pageNumber = 0, sortMethod = {"feature": "timestamp",
               `commentLimit=${commentLimit}`,
               `sortFeature=${sortMethod.feature}`,
               `sortDirection=${sortMethod.direction}`].join("&");
-  console.log(url);
 
   fetch(url).then(response => response.json()).then((quote) => {
     const messageContainerDiv = document.getElementById("message-container");
@@ -69,6 +68,7 @@ function addMessage(pageNumber = 0, sortMethod = {"feature": "timestamp",
   });
 }
 
+
 /**
  * Build the elements of an individual message using JSON data
  * Also create a delete button
@@ -76,41 +76,55 @@ function addMessage(pageNumber = 0, sortMethod = {"feature": "timestamp",
 function createMessageElements(comment) {
   var messageDiv = document.createElement("div");
   messageDiv.className = "message-box";
+
+  //get actual comment and load it into the DOM 
+  var commentParent = document.createElement("div");
+  commentParent.className = "comment";
   var commentElement = document.createElement("p");
   commentElement.innerText = `${comment.comment} posted at ${comment.timestamp}`;
+  commentParent.appendChild(commentElement);
 
+  //make commentButtons div (stores upvoteCount, upvoteButton, deleteButton)
+  var commentButtons = document.createElement("div");
+  commentButtons.className = "comment-buttons";
+
+  //make the upvote count element
+  var upvoteCountParent = document.createElement("div");
+  upvoteCountParent.className = "comment-button";
+  var upvoteCountElement = document.createElement("p");
+  var numUpvotes = comment.upvoteCount;
+  upvoteCountElement.innerText = numUpvotes.toString() + " upvotes";
+  upvoteCountParent.appendChild(upvoteCountElement);
+
+  //make the upvote button
+  var upvoteButtonElement = document.createElement("button");
+  upvoteButtonElement.className = "comment-button";
+  upvoteButtonElement.innerText = "Upvote";
+  upvoteButtonElement.addEventListener('click', () => {
+    numUpvotes++;
+    upvoteCountElement.innerText = numUpvotes + " upvotes";
+    upvoteComment(comment);
+  });
+
+  //make the delete button  
   const deleteButtonElement = document.createElement("button");
+  deleteButtonElement.className = "comment-button";
   deleteButtonElement.innerText = "Delete comment";
   deleteButtonElement.addEventListener('click', () => {
     //remove from datastore and DOM
     deleteComment(comment);
     messageDiv.remove();
   });
-
-  var upvoteAndButtonElements = document.createElement("div");
-  var upvoteElement = document.createElement("p");
-
-  var numUpvotes = comment.upvoteCount;
   
-  upvoteElement.innerText = numUpvotes.toString() + " upvotes";
-
-  var upvoteButtonElement = document.createElement("button");
-  upvoteButtonElement.innerText = "Upvote";
-  upvoteButtonElement.addEventListener('click', () => {
-    numUpvotes++;
-    upvoteElement.innerText = numUpvotes + " upvotes";
-
-    upvoteComment(comment);
-  });
-
-  upvoteAndButtonElements.appendChild(upvoteElement);
-  upvoteAndButtonElements.appendChild(upvoteButtonElement);
+  commentButtons.appendChild(upvoteCountParent);
+  commentButtons.appendChild(upvoteButtonElement);
+  commentButtons.appendChild(deleteButtonElement);
   
-  messageDiv.appendChild(commentElement);
-  messageDiv.appendChild(upvoteAndButtonElements);
-  messageDiv.appendChild(deleteButtonElement);
+  messageDiv.appendChild(commentParent);
+  messageDiv.appendChild(commentButtons);
   return messageDiv;
 }
+
 
 function deleteComment(comment) {
   const params = new URLSearchParams();
@@ -161,4 +175,4 @@ function applySortMethod() {
 }
 
 addMessage();
-loadComments();
+moreComments();

@@ -29,6 +29,7 @@
 .content > form > input[type=submit]:hover {
   background-color: #4a86e8;
   color: white;
+  font-weight: bold;
 }
 
 textarea {
@@ -89,16 +90,22 @@ button {
 button:hover {
   background-color: #4a86e8;
   color: white;
+  font-weight: bold;
 }
 
 .message-box {
-  border: 2px solid #4a86e8;
   border-radius: 15px;
   margin-top: 1em;
   margin-bottom: 1em;
+  background-color: mintcream;
 }
 
-#pagination > a { 
+#more-comments {
+  overflow-y: hidden;
+  justify-content: space-evenly;
+  display: flex;
+}
+#more-comments > a { 
   width: 1em;
   text-align: center;
   background-color: white;
@@ -112,7 +119,26 @@ button:hover {
   display: inline-block;
   text-decoration: none;
 }
-#pagination > a:hover {
+#more-comments > a:hover {
   background-color: #4a86e8;
   color: white;
+  font-weight: bold;
+}
+
+.comment-buttons {
+  overflow-y: hidden;
+  justify-content: space-evenly;
+  display: flex;
+}
+
+.comment-button {
+  float: left;
+}
+
+.comment-button > p {
+  margin: 0;
+}
+
+.comment {
+  padding-left: 2em;
 }

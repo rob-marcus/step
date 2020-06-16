@@ -51,9 +51,6 @@ public class DataServlet extends HttpServlet {
     String defaultSortFeature = "timestamp";
     String sortFeature = getSortFeature(request, "sortFeature"); 
 
-    String defaultSortFeature = "timestamp";
-    String sortFeature = getParameter(request, "sortFeature", defaultSortFeature);
-
     Boolean sortDescending = getBoolInputOrDefault(request, "sortDirection", true);
     
     Query query = new Query("Comment");
