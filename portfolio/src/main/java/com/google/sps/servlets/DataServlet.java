@@ -99,32 +99,37 @@ public class DataServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    UserService userService = UserServiceFactory.getUserService();
-    if (userService.isUserLoggedIn()) {
-      String comment = getParameterOrDefault(request, "comment", /*default comment value=*/"");
-      long timestamp = System.currentTimeMillis();
-      
-      String[] email = userService.getCurrentUser().toString().split("@");
-      String emailPrefix = email[0];
+    try {
+      UserService userService = UserServiceFactory.getUserService();
+      if (userService.isUserLoggedIn()) {
+        String comment = getParameterOrDefault(request, "comment", /*default comment value=*/"");
+        long timestamp = System.currentTimeMillis();
+        
+        String[] email = userService.getCurrentUser().toString().split("@");
+        String emailPrefix = email[0];
 
-      String userId = userService.getCurrentUser().getUserId();
+        String userId = userService.getCurrentUser().getUserId();
 
-      Entity commentEntity = new Entity("Comment");
-      commentEntity.setProperty("comment", comment);
-      commentEntity.setProperty("timestamp", timestamp);
-      commentEntity.setProperty("upvoteCount", Long.valueOf(1));
-      commentEntity.setProperty("emailPrefix", emailPrefix);
-      commentEntity.setProperty("userId", userId);
+        Entity commentEntity = new Entity("Comment");
+        commentEntity.setProperty("comment", comment);
+        commentEntity.setProperty("timestamp", timestamp);
+        commentEntity.setProperty("upvoteCount", Long.valueOf(1));
+        commentEntity.setProperty("emailPrefix", emailPrefix);
+        commentEntity.setProperty("userId", userId);
 
-      DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-      datastore.put(commentEntity);
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        datastore.put(commentEntity);
 
-      response.sendRedirect("/index.html");
-    } else {
-      String urlToRedirectToAfterUserLogsIn = "index.html";
-      String loginUrl = userService.createLoginURL(urlToRedirectToAfterUserLogsIn);
-      
-      response.sendRedirect(loginUrl);
+        response.sendRedirect("/index.html");
+      } else {
+        String urlToRedirectToAfterUserLogsIn = "index.html";
+        String loginUrl = userService.createLoginURL(urlToRedirectToAfterUserLogsIn);
+        
+        response.sendRedirect(loginUrl);
+      }
+    } catch (Exception e) {
+      response.sendError(HttpServletResponse.SC_NOT_FOUND, 
+          "Something weird happened with the java data servlet! Oops");
     }
   }
 
