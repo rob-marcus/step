@@ -77,7 +77,11 @@ function createMessageElements(comment) {
   var messageDiv = document.createElement("div");
 
   var commentElement = document.createElement("p");
-  commentElement.innerText = `${comment.comment} posted at ${comment.timestamp}`;
+  commentElement.innerText = [comment.comment, 
+                              "...from", 
+                              comment.emailPrefix, 
+                              "at", 
+                              comment.timestamp].join(" ");
 
   const deleteButtonElement = document.createElement("button");
   deleteButtonElement.className = "delete-button";

@@ -84,8 +84,9 @@ public class DataServlet extends HttpServlet {
       String comment = (String) entity.getProperty("comment");
       long timestamp = (long) entity.getProperty("timestamp");
       long upvoteCount = (long) entity.getProperty("upvoteCount");
-      
-      Comment newComment = new Comment(id, comment, timestamp, upvoteCount);
+      String emailPrefix = (String) entity.getProperty("emailPrefix");
+
+      Comment newComment = new Comment(id, comment, timestamp, upvoteCount, emailPrefix);
       comments.add(newComment);
     }
 
@@ -102,11 +103,14 @@ public class DataServlet extends HttpServlet {
       String comment = getParameterOrDefault(request, "comment", /*default comment value=*/"");
       long timestamp = System.currentTimeMillis();
       
+      String[] email = userService.getCurrentUser().toString().split("@");
+      String emailPrefix = email[0];
+
       Entity commentEntity = new Entity("Comment");
       commentEntity.setProperty("comment", comment);
       commentEntity.setProperty("timestamp", timestamp);
       commentEntity.setProperty("upvoteCount", Long.valueOf(1));
-      
+      commentEntity.setProperty("emailPrefix", emailPrefix);
       DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
       datastore.put(commentEntity);
 

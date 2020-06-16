@@ -24,11 +24,13 @@ public final class Comment {
   private final String comment;
   private final long timestamp;
   private final long upvoteCount; 
+  private final String emailPrefix; 
   
-  public Comment(long id, String comment, long timestamp, long upvoteCount) {
+  public Comment(long id, String comment, long timestamp, long upvoteCount, String emailPrefix) {
     this.id = id;
     this.comment = comment;
     this.timestamp = timestamp;
     this.upvoteCount = upvoteCount; 
+    this.emailPrefix = emailPrefix;
   }
 }
