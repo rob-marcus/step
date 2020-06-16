@@ -34,7 +34,6 @@ import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 
-
 import com.google.sps.data.Comment;
 
 /** Servlet responsible for deleting comments. */
@@ -44,21 +43,20 @@ public class UpvoteCommentServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     long id = Long.parseLong(request.getParameter("id"));
-    long upvotes = Long.parseLong(request.getParameter("upvotes"));
-    long timestamp = Long.parseLong(request.getParameter("timestamp"));
-    String comment = request.getParameter("comment");
 
-    Key taskEntityKey = KeyFactory.createKey("Comment", id);
+    long upvotes = Long.parseLong(request.getParameter("upvoteCount"));
+
+    Key commentEntityKey = KeyFactory.createKey("Comment", id);
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    datastore.delete(taskEntityKey);
-
-    Entity commentEntity = new Entity("Comment");
-    commentEntity.setProperty("comment", comment);
-    commentEntity.setProperty("timestamp", timestamp);
-    commentEntity.setProperty("upvotes", upvotes);
-    commentEntity.setProperty("id", id);
-
-    datastore.put(commentEntity);
-
+    
+    try {
+      Entity upvotedComment = datastore.get(commentEntityKey);
+      upvotedComment.setProperty("upvoteCount", upvotes);
+      datastore.put(upvotedComment);
+    } catch (com.google.appengine.api.datastore.EntityNotFoundException enfe) {
+      
+      //if comment doesn't exist don't upvote but print out the supposed ID...
+      System.out.println("failed to upvote comm ent with id" + id);
+    }
   }
 }

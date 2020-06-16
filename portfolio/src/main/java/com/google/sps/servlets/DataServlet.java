@@ -47,14 +47,17 @@ public class DataServlet extends HttpServlet {
 
     int defaultPageNumber = 0;
     int pageNumber = getIntInputOrDefault(request, "pageNumber", defaultPageNumber);
+    
+    String defaultSortFeature = "timestamp";
+    String sortFeature = getSortFeature(request, "sortFeature"); 
 
     String defaultSortFeature = "timestamp";
     String sortFeature = getParameter(request, "sortFeature", defaultSortFeature);
 
     Boolean sortDescending = getBoolInputOrDefault(request, "sortDirection", true);
-
-    Query query = new Query("Comment");
     
+    Query query = new Query("Comment");
+
     if (sortDescending) {
       query.addSort(sortFeature, SortDirection.DESCENDING);
     } else {
@@ -78,8 +81,9 @@ public class DataServlet extends HttpServlet {
       long id = entity.getKey().getId();
       String comment = (String) entity.getProperty("comment");
       long timestamp = (long) entity.getProperty("timestamp");
-
-      Comment newComment = new Comment(id, comment, timestamp);
+      long upvoteCount = (long) entity.getProperty("upvoteCount");
+      
+      Comment newComment = new Comment(id, comment, timestamp, upvoteCount);
       comments.add(newComment);
     }
 
@@ -93,12 +97,12 @@ public class DataServlet extends HttpServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String comment = getParameterOrDefault(request, "comment", /*default comment value=*/"");
     long timestamp = System.currentTimeMillis();
-    long upvotes = Long.valueOf(1);
+    long upvoteCount = Long.valueOf(1);
     
     Entity commentEntity = new Entity("Comment");
     commentEntity.setProperty("comment", comment);
     commentEntity.setProperty("timestamp", timestamp);
-    commentEntity.setProperty("upvotes", upvotes);
+    commentEntity.setProperty("upvoteCount", upvoteCount);
     
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     datastore.put(commentEntity);
@@ -115,6 +119,20 @@ public class DataServlet extends HttpServlet {
       return defaultValue;
     }
     return value;
+  }
+  /*
+   * Only return a valid sortFeature...
+   */ 
+  private String getSortFeature(HttpServletRequest request, String name) {
+    String sortFeatureOne = "timestamp";
+    String sortFeatureTwo = "upvoteCount";
+
+    String sortFeature = getParameterOrDefault(request, name, sortFeatureOne);
+    if (sortFeature.equals(sortFeatureOne) || sortFeature.equals(sortFeatureTwo)) {
+      return sortFeature;
+    } else {
+      return sortFeatureOne;
+    }
   }
 
   /*

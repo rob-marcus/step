@@ -21,22 +21,22 @@
         <input type="submit" class="submit"></input>
       </form>
       <form method="GET">
-        <label for="numShown">Show this many comments:</label>
-        <input type="number" name="numShown" id="numShown" min=1 step=1></input>
+        <label for="commentLimit">Show this many comments:</label>
+        <input type="number" name="commentLimit" id="commentLimit" min=1 step=1></input>
         <input type="submit" class="submit" value="Show"></input>
       </form>
       <form>
         <label for="sortMethod">Sort:</label>
         <select id="sortMethod" onchange="applySortMethod()">
-          <option value="timestamp DESCENDING" selected="selected">Time (newest)</option>
-          <option value="timestamp ASCENDING">Time (oldest)</option>
-          <option value="upvotes DESCENDING">Most popular</option>
-          <option value="upvotes ASCENDING">Least popular</option>
+          <option value="timestamp true" selected="selected">Time (newest)</option>
+          <option value="timestamp false">Time (oldest)</option>
+          <option value="upvoteCount true">Most popular</option>
+          <option value="upvoteCount false">Least popular</option>
         </select>
       </form>
 
       <div id="message-container"></div>
-      <div id="pagination"></div>
+      <div id="comments"></div>
     </div>
     <div id="footer"></div>
   <script src="splashPage.js"></script>
