@@ -49,26 +49,37 @@ public class DeleteCommentServlet extends HttpServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     response.setContentType("application/json");
 
-    UserService userService = UserServiceFactory.getUserService();
-    UserInfo userInfo = new UserInfo();
+    long id = Long.parseLong(request.getParameter("id"));
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    Key taskEntityKey = KeyFactory.createKey("Comment", id);
 
-    if (userService.isUserLoggedIn()) {
-      long id = Long.parseLong(request.getParameter("id"));
+    //Only delete a comment if the author is trying to delete it. 
+    try {
+      String commentUserId = (String) datastore.get(taskEntityKey).getProperty("userId");
 
-      Key taskEntityKey = KeyFactory.createKey("Comment", id);
-      DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-      datastore.delete(taskEntityKey);
+      UserService userService = UserServiceFactory.getUserService();
+      UserInfo userInfo = new UserInfo();
 
-      userInfo.loggedIn = true;
-    } else {
-      String urlToRedirectToAfterUserLogsIn = "/index.html";
-      String loginUrl = userService.createLoginURL(urlToRedirectToAfterUserLogsIn);
+      String currentUserId = userService.getCurrentUser().getUserId();
+      userInfo.userId = currentUserId;
 
-      userInfo.loggedIn = false;
-      userInfo.loginUrl = loginUrl;
+      if (userService.isUserLoggedIn()) {
+        if(currentUserId.equals(commentUserId)) {
+          datastore.delete(taskEntityKey);
+        }
+        userInfo.loggedIn = true;
+      } else {
+        String urlToRedirectToAfterUserLogsIn = "/index.html";
+        String loginUrl = userService.createLoginURL(urlToRedirectToAfterUserLogsIn);
+
+        userInfo.loggedIn = false;
+        userInfo.loginUrl = loginUrl;
+      }
+
+      String json = new Gson().toJson(userInfo);
+      response.getWriter().println(json);
+    } catch (com.google.appengine.api.datastore.EntityNotFoundException enfe) {
+      System.out.println("Failed weirdly while deleting and trying to retrieve info from " + id);
     }
-
-    String json = new Gson().toJson(userInfo);
-    response.getWriter().println(json);
   }
 }

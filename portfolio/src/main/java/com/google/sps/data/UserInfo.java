@@ -5,4 +5,5 @@ public class UserInfo {
     public String email;
     public String loginUrl;
     public String logoutUrl;
+    public String userId;
 }

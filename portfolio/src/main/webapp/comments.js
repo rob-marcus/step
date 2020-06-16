@@ -60,7 +60,6 @@ function addMessage(pageNumber = 0, sortMethod = {"feature": "timestamp",
               `commentLimit=${commentLimit}`,
               `sortFeature=${sortMethod.feature}`,
               `sortDirection=${sortMethod.direction}`].join("&");
-  console.log(url);
 
   fetch(url).then(response => response.json()).then((quote) => {
     const messageContainerDiv = document.getElementById("message-container");
@@ -94,7 +93,7 @@ function createMessageElements(comment) {
   var upvoteAndButtonElements = document.createElement("div");
   var upvoteElement = document.createElement("p");
   var numUpvotes = comment.upvoteCount;
-  console.log(numUpvotes);
+
   upvoteElement.innerText = numUpvotes.toString() + " upvotes";
 
   var upvoteButtonElement = document.createElement("button");
@@ -122,7 +121,13 @@ function deleteComment(comment, messageDiv) {
   .then(userInfo => 
   {
     if (userInfo.loggedIn) {
-      messageDiv.remove(); //delete only possible with log in 
+      if (userInfo.userId === (comment.userId)) {
+        
+        //delete only possible with login and same id as author
+        messageDiv.remove(); 
+      } else {
+        alert("You can only delete your own comment(s).");
+      }
     } else {
       window.location = userInfo.loginUrl;
     }

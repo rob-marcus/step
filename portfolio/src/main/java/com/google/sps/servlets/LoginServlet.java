@@ -47,6 +47,8 @@ public class LoginServlet extends HttpServlet {
       userInfo.loggedIn = true;
       userInfo.logoutUrl = logoutUrl;
       userInfo.email = userEmail;
+      userInfo.userId = userService.getCurrentUser().getUserId();
+  
     } else {
       String urlToRedirectToAfterUserLogsIn = "/index.html";
       String loginUrl = userService.createLoginURL(urlToRedirectToAfterUserLogsIn);
