@@ -52,15 +52,18 @@ public class DataServlet extends HttpServlet {
 
     int defaultPageNumber = 0;
     int pageNumber = getIntInputOrDefault(request, "pageNumber", defaultPageNumber);
+    
+    String defaultSortFeature = "timestamp";
+    String sortFeature = getSortFeature(request, "sortFeature"); 
 
     Boolean sortDescending = getBoolInputOrDefault(request, "sortDirection", true);
     
     Query query = new Query("Comment");
-    
+
     if (sortDescending) {
-      query.addSort("timestamp", SortDirection.DESCENDING);
+      query.addSort(sortFeature, SortDirection.DESCENDING);
     } else {
-      query.addSort("timestamp", SortDirection.ASCENDING);
+      query.addSort(sortFeature, SortDirection.ASCENDING);
     }
     
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
@@ -80,8 +83,9 @@ public class DataServlet extends HttpServlet {
       long id = entity.getKey().getId();
       String comment = (String) entity.getProperty("comment");
       long timestamp = (long) entity.getProperty("timestamp");
-
-      Comment newComment = new Comment(id, comment, timestamp);
+      long upvoteCount = (long) entity.getProperty("upvoteCount");
+      
+      Comment newComment = new Comment(id, comment, timestamp, upvoteCount);
       comments.add(newComment);
     }
 
@@ -123,6 +127,20 @@ public class DataServlet extends HttpServlet {
       return defaultValue;
     }
     return value;
+  }
+  /*
+   * Only return a valid sortFeature...
+   */ 
+  private String getSortFeature(HttpServletRequest request, String name) {
+    String sortFeatureOne = "timestamp";
+    String sortFeatureTwo = "upvoteCount";
+
+    String sortFeature = getParameterOrDefault(request, name, sortFeatureOne);
+    if (sortFeature.equals(sortFeatureOne) || sortFeature.equals(sortFeatureTwo)) {
+      return sortFeature;
+    } else {
+      return sortFeatureOne;
+    }
   }
 
   /*

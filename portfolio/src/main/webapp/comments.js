@@ -37,26 +37,30 @@ function loadComments() {
       pageElement.href = "#";
       pageElement.addEventListener('click', () => {
         //load comments on pageNumber
-        addMessage(thisPageNumber, getSortDirection());
+        addMessage(thisPageNumber, getSortMethod());
       });
 
       commentsDiv.appendChild(pageElement);
     }
   })
-  .catch(error => {console.log("failed to get num comments, oops!");});
+  .catch(error => {console.log("failed to get num comments, oops!" + error);});
 }
 
 
 /**
  * Using fetch request content from servlet and add to home page
  */
-function addMessage(pageNumber = 0, sortDirection = "true") {
+function addMessage(pageNumber = 0, sortMethod = {"feature": "timestamp", 
+                                                  "direction": "true"}) 
+{
   const commentLimit = getCommentLimit();
   clearMessageDiv();
 
-  var url =  "/data?".concat(`pageNumber=${pageNumber}`,
-                            `&commentLimit=${commentLimit}`,
-                            `&sortDirection=${sortDirection}`);
+  const url = [`/data?pageNumber=${pageNumber}`,
+              `commentLimit=${commentLimit}`,
+              `sortFeature=${sortMethod.feature}`,
+              `sortDirection=${sortMethod.direction}`].join("&");
+  console.log(url);
 
   fetch(url).then(response => response.json()).then((quote) => {
     const messageContainerDiv = document.getElementById("message-container");
@@ -83,23 +87,25 @@ function createMessageElements(comment) {
     deleteComment(comment, messageDiv);
   });
 
-  var likeAndButtonElements = document.createElement("div");
-  var likesElement = document.createElement("p");
-  var likes = 0;
-  likesElement.innerText = likes.toString() + " upvotes";
+  var upvoteAndButtonElements = document.createElement("div");
+  var upvoteElement = document.createElement("p");
+  var numUpvotes = comment.upvoteCount;
+  console.log(numUpvotes);
+  upvoteElement.innerText = numUpvotes.toString() + " upvotes";
 
-  var likeButtonElement = document.createElement("button");
-  likeButtonElement.innerText = "Upvote";
-  likeButtonElement.addEventListener('click', () => {
-    likes++;
-    likesElement.innerText = likes + " upvotes";
+  var upvoteButtonElement = document.createElement("button");
+  upvoteButtonElement.innerText = "Upvote";
+  upvoteButtonElement.addEventListener('click', () => {
+    numUpvotes++;
+    upvoteElement.innerText = numUpvotes + " upvotes";
+    upvoteComment(comment);
   });
 
-  likeAndButtonElements.appendChild(likesElement);
-  likeAndButtonElements.appendChild(likeButtonElement);
+  upvoteAndButtonElements.appendChild(upvoteElement);
+  upvoteAndButtonElements.appendChild(upvoteButtonElement);
   
   messageDiv.appendChild(commentElement);
-  messageDiv.appendChild(likeAndButtonElements);
+  messageDiv.appendChild(upvoteAndButtonElements);
   messageDiv.appendChild(deleteButtonElement);
   return messageDiv;
 }
@@ -119,6 +125,12 @@ function deleteComment(comment, messageDiv) {
   });
 }
 
+function upvoteComment(comment) {
+  const params = new URLSearchParams(); 
+  params.append('id', comment.id);
+  params.append('upvoteCount', comment.upvoteCount + 1)
+  fetch("/upvote-comment", {method: 'POST', body: params});
+}
 /**
  * Basic test to check well typed and apply some bounds
  */
@@ -142,16 +154,18 @@ function getCommentLimit() {
   return commentLimit;
 }
 
-function getSortDirection() {
-  var sortDirectionOptions = document.getElementById("sortDirection");
-  var sortDirection = 
-      sortDirectionOptions.options[sortDirectionOptions.selectedIndex].value;
+function getSortMethod() {
+  var sortMethodOptions = document.getElementById("sortMethod");
+  var sortMethod = 
+      sortMethodOptions.options[sortMethodOptions.selectedIndex].value;
 
-  return sortDirection;
+  var splitSortMethod = sortMethod.split(" ");
+
+  return {"feature": splitSortMethod[0], "direction": splitSortMethod[1]};
 }
 
-function applySortDirection() {
-  addMessage(0, getSortDirection());
+function applySortMethod() {
+  addMessage(0, getSortMethod());
 }
 
 addMessage();
