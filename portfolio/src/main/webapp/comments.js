@@ -136,7 +136,7 @@ function deleteComment(comment) {
 function upvoteComment(comment) {
   const params = new URLSearchParams(); 
   params.append('id', comment.id);
-  params.append('upvoteCount', comment.upvoteCount + 1);
+  params.append('upvoteCount', comment.upvoteCount);
   fetch("/upvote-comment", {method: 'POST', body: params});
 }
 
