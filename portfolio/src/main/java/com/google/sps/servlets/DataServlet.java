@@ -102,7 +102,9 @@ public class DataServlet extends HttpServlet {
     try {
       UserService userService = UserServiceFactory.getUserService();
       if (userService.isUserLoggedIn()) {
-        String comment = getParameterOrDefault(request, "comment", /*default comment value=*/"");
+        String comment = 
+            getParameterOrDefault(request, "comment", /* default comment value= */ "");
+        
         long timestamp = System.currentTimeMillis();
         
         String[] email = userService.getCurrentUser().toString().split("@");

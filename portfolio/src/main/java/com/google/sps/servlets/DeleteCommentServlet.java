@@ -52,7 +52,6 @@ public class DeleteCommentServlet extends HttpServlet {
     long id = Long.parseLong(request.getParameter("id"));
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     Key taskEntityKey = KeyFactory.createKey("Comment", id);
-
     //Only delete a comment if the author is trying to delete it. 
     try {
       String commentUserId = (String) datastore.get(taskEntityKey).getProperty("userId");
@@ -66,20 +65,17 @@ public class DeleteCommentServlet extends HttpServlet {
       if (userService.isUserLoggedIn()) {
         if(currentUserId.equals(commentUserId)) {
           datastore.delete(taskEntityKey);
+          response.setStatus(HttpServletResponse.SC_OK); //success
+        } else {
+          response.setStatus(HttpServletResponse.SC_BAD_REQUEST); //not logged in
         }
-        userInfo.loggedIn = true;
       } else {
-        String urlToRedirectToAfterUserLogsIn = "/index.html";
-        String loginUrl = userService.createLoginURL(urlToRedirectToAfterUserLogsIn);
-
-        userInfo.loggedIn = false;
-        userInfo.loginUrl = loginUrl;
+        response.setStatus(HttpServletResponse.SC_BAD_REQUEST); //not logged in
       }
 
-      String json = new Gson().toJson(userInfo);
-      response.getWriter().println(json);
+
     } catch (com.google.appengine.api.datastore.EntityNotFoundException enfe) {
-      System.out.println("Failed weirdly while deleting and trying to retrieve info from " + id);
+      System.out.println("Failed to delete " + id + " possibly because it does not exist." + enfe);
     }
   }
 }
