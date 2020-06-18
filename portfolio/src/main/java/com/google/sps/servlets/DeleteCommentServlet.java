@@ -69,8 +69,6 @@ public class DeleteCommentServlet extends HttpServlet {
       } else {
         response.setStatus(HttpServletResponse.SC_BAD_REQUEST); // not logged in
       }
-
-
     } catch (com.google.appengine.api.datastore.EntityNotFoundException enfe) {
       System.out.println("Failed to delete " + id + " possibly because it does not exist." + enfe);
     }

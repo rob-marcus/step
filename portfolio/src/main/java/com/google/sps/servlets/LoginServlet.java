@@ -55,9 +55,7 @@ public class LoginServlet extends HttpServlet {
       userInfo.loggedIn = false;
       userInfo.loginUrl = loginUrl;
     }
-    // GSON html-escapes by default so have to use this to bypass... 
-    Gson gson = new GsonBuilder().disableHtmlEscaping().create();
-    String json = gson.toJson(userInfo);
+    String json = new Gson().toJson(userInfo);
     response.getWriter().println(json);
   }
 }
