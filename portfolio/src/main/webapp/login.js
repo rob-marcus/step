@@ -15,16 +15,16 @@
 /**
  * Toggle a button to be disabled or not disabled
  */
-function setButtonDisabled(button, parityBool) {
-  button.disabled = parityBool;
+function setButtonDisabled(button, isDisabled) {
+  button.disabled = isDisabled;
 }
 
 /**
  * Do setButtonDisabled for all buttons in a class
  */
-function setButtonsDisabled(buttons, parityBool) {
+function setButtonsDisabled(buttons, isDisabled) {
   for (var buttonIndex = 0; buttonIndex < buttons.length; buttonIndex++) {
-    setButtonDisabled(buttons.item(buttonIndex), parityBool);
+    setButtonDisabled(buttons.item(buttonIndex), isDisabled);
   }
 }
 
