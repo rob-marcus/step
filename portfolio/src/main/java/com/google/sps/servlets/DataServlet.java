@@ -37,7 +37,6 @@ import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 
 import com.google.sps.data.Comment;
-import com.google.sps.data.UserInfo;
 
 import org.apache.commons.lang3.BooleanUtils; 
 
@@ -107,8 +106,8 @@ public class DataServlet extends HttpServlet {
         
         long timestamp = System.currentTimeMillis();
         
-        String[] email = userService.getCurrentUser().toString().split("@");
-        String emailPrefix = email[0];
+        String[] emailSplit = userService.getCurrentUser().toString().split("@");
+        String emailPrefix = emailSplit[0];
 
         String userId = userService.getCurrentUser().getUserId();
 

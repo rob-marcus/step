@@ -39,7 +39,6 @@ import com.google.appengine.api.users.UserServiceFactory;
 
 
 import com.google.sps.data.Comment;
-import com.google.sps.data.UserInfo;
 
 /** Servlet responsible for deleting comments. */
 @WebServlet("/delete-comment")
@@ -57,10 +56,7 @@ public class DeleteCommentServlet extends HttpServlet {
       String commentUserId = (String) datastore.get(taskEntityKey).getProperty("userId");
 
       UserService userService = UserServiceFactory.getUserService();
-      UserInfo userInfo = new UserInfo();
-
       String currentUserId = userService.getCurrentUser().getUserId();
-      userInfo.userId = currentUserId;
 
       if (userService.isUserLoggedIn()) {
         if(currentUserId.equals(commentUserId)) {

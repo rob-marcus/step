@@ -117,12 +117,9 @@ function deleteComment(comment, messageDiv) {
   const params = new URLSearchParams();
   params.append('id', comment.id);
   fetch('/delete-comment', {method: 'POST', body: params})
-  //.then(response => response.json())
-  //.then(userInfo.json() => 
   .then(response => 
   {
     var status = response.status;
-    console.log(status);
     if (status == 200) {
         //delete only possible with login and same id as author
         messageDiv.remove(); 

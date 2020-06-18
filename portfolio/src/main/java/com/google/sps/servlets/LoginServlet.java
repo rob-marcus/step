@@ -46,7 +46,7 @@ public class LoginServlet extends HttpServlet {
       
       userInfo.loggedIn = true;
       userInfo.logoutUrl = logoutUrl;
-      userInfo.email = userEmail;
+      userInfo.fullEmail = userEmail;
       userInfo.userId = userService.getCurrentUser().getUserId();
   
     } else {
