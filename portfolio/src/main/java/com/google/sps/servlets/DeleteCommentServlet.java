@@ -51,7 +51,8 @@ public class DeleteCommentServlet extends HttpServlet {
     long id = Long.parseLong(request.getParameter("id"));
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     Key taskEntityKey = KeyFactory.createKey("Comment", id);
-    //Only delete a comment if the author is trying to delete it. 
+    
+    // Only delete a comment if the author is trying to delete it. 
     try {
       String commentUserId = (String) datastore.get(taskEntityKey).getProperty("userId");
 
@@ -61,12 +62,12 @@ public class DeleteCommentServlet extends HttpServlet {
       if (userService.isUserLoggedIn()) {
         if(currentUserId.equals(commentUserId)) {
           datastore.delete(taskEntityKey);
-          response.setStatus(HttpServletResponse.SC_OK); //success
+          response.setStatus(HttpServletResponse.SC_OK); // success
         } else {
-          response.setStatus(HttpServletResponse.SC_BAD_REQUEST); //not logged in
+          response.setStatus(HttpServletResponse.SC_BAD_REQUEST); // not logged in
         }
       } else {
-        response.setStatus(HttpServletResponse.SC_BAD_REQUEST); //not logged in
+        response.setStatus(HttpServletResponse.SC_BAD_REQUEST); // not logged in
       }
 
 

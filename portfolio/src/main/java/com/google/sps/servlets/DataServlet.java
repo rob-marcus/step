@@ -166,7 +166,7 @@ public class DataServlet extends HttpServlet {
   private int getPositiveInputOrDefault(HttpServletRequest request, String name, int defaultValue) {
     int value = getIntInputOrDefault(request, name, defaultValue);
     if (value < 1) {
-      //additional guarantee that defaultValue is also positive...
+      // additional guarantee that defaultValue is also positive...
       return defaultValue > 0 ? defaultValue : 1;
     }
     return value;

@@ -36,7 +36,7 @@ function loadComments() {
       pageElement.innerText = thisPageNumber;
       pageElement.href = "#";
       pageElement.addEventListener('click', () => {
-        //load comments on pageNumber
+        // load comments on pageNumber
         addMessage(thisPageNumber, getSortMethod());
       });
 
@@ -86,7 +86,7 @@ function createMessageElements(comment) {
   deleteButtonElement.className = "delete-button";
   deleteButtonElement.innerText = "Delete comment";
   deleteButtonElement.addEventListener('click', () => {
-    //remove from datastore and DOM
+    // remove from datastore and DOM
     deleteComment(comment, messageDiv);
   });
 
@@ -121,7 +121,7 @@ function deleteComment(comment, messageDiv) {
   {
     var status = response.status;
     if (status == 200) {
-        //delete only possible with login and same id as author
+        // delete only possible with login and same id as author
         messageDiv.remove(); 
     } else {
       alert("You can only delete your own comment(s), and you must login.");
