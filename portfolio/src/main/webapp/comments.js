@@ -120,11 +120,15 @@ function deleteComment(comment, messageDiv) {
   .then(response => 
   {
     var status = response.status;
-    if (status == 200) {
+    if (status == 200) { // SC_OK
         // delete only possible with login and same id as author
         messageDiv.remove(); 
-    } else {
-      alert("You can only delete your own comment(s), and you must login.");
+    } else if (status == 403) { // SC_FORBIDDEN
+      alert("You can only delete your own comment.");
+    } else if (status == 401) { // SC_UNAUTHORIZED
+      alert("You must be logged in to delete a comment.");
+    } else { 
+      alert("Something broke while trying to delete this comment");
     }
   });
 }

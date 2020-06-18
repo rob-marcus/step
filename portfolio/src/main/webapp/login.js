@@ -13,7 +13,7 @@
 // limitations under the License.
 
 /**
- * Toggle a button to be disabled or not disabled
+ * Set a button to be disabled or not disabled
  */
 function setButtonDisabled(button, isDisabled) {
   button.disabled = isDisabled;

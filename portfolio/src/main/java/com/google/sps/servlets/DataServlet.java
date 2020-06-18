@@ -102,7 +102,7 @@ public class DataServlet extends HttpServlet {
       UserService userService = UserServiceFactory.getUserService();
       if (userService.isUserLoggedIn()) {
         String comment = 
-            getParameterOrDefault(request, "comment", /* default comment value= */ "");
+            getParameterOrDefault(request, "comment", /* defaultValue = */ "");
         
         long timestamp = System.currentTimeMillis();
         
