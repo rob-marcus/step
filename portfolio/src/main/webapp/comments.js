@@ -78,7 +78,7 @@ function createMessageElements(comment) {
   var commentElement = document.createElement("p");
   commentElement.innerText = [comment.comment, 
                               "...from", 
-                              comment.emailPrefix, 
+                              comment.userName, 
                               "at", 
                               comment.timestamp].join(" ");
 
