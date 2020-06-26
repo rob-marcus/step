@@ -36,7 +36,7 @@ function moreComments() {
       pageElement.innerText = thisPageNumber;
       pageElement.href = "#";
       pageElement.addEventListener('click', () => {
-        //load comments on pageNumber
+        // load comments on pageNumber
         addMessage(thisPageNumber, getSortMethod());
       });
 
@@ -81,18 +81,26 @@ function createMessageElements(comment) {
   var commentParent = document.createElement("div");
   commentParent.className = "comment";
   var commentElement = document.createElement("p");
-  commentElement.innerText = `${comment.comment} posted at ${comment.timestamp}`;
-  commentParent.appendChild(commentElement);
+  commentElement.innerText = [comment.comment, 
+                              "...from", 
+                              comment.userName, 
+                              "at", 
+                              comment.timestamp].join(" ");
 
-  //make commentButtons div (stores upvoteCount, upvoteButton, deleteButton)
-  var commentButtons = document.createElement("div");
-  commentButtons.className = "comment-buttons";
+  const deleteButtonElement = document.createElement("button");
+  deleteButtonElement.className = "delete-button";
+  deleteButtonElement.innerText = "Delete comment";
+  deleteButtonElement.addEventListener('click', () => {
+    // remove from datastore and DOM
+    deleteComment(comment, messageDiv);
+  });
 
   //make the upvote count element
   var upvoteCountParent = document.createElement("div");
   upvoteCountParent.className = "comment-button";
   var upvoteCountElement = document.createElement("p");
   var numUpvotes = comment.upvoteCount;
+
   upvoteCountElement.innerText = numUpvotes.toString() + " upvotes";
   upvoteCountParent.appendChild(upvoteCountElement);
 
@@ -125,11 +133,24 @@ function createMessageElements(comment) {
   return messageDiv;
 }
 
-
-function deleteComment(comment) {
+function deleteComment(comment, messageDiv) {
   const params = new URLSearchParams();
   params.append('id', comment.id);
-  fetch('/delete-comment', {method: 'POST', body: params});
+  fetch('/delete-comment', {method: 'POST', body: params})
+  .then(response => 
+  {
+    var status = response.status;
+    if (status == 200) { // SC_OK
+        // delete only possible with login and same id as author
+        messageDiv.remove(); 
+    } else if (status == 403) { // SC_FORBIDDEN
+      alert("You can only delete your own comment.");
+    } else if (status == 401) { // SC_UNAUTHORIZED
+      alert("You must be logged in to delete a comment.");
+    } else { 
+      alert("Something broke while trying to delete this comment");
+    }
+  });
 }
 
 
@@ -143,6 +164,7 @@ function upvoteComment(comment) {
 /**
  * Basic test to check well typed and apply some bounds
  */
+
 function isWithinBounds(number, lo, hi) {
     return !isNaN(number) && parseInt(number) > lo && parseInt(number) < hi; 
 }
@@ -150,11 +172,13 @@ function isWithinBounds(number, lo, hi) {
 function getCommentLimit() {
   let pageParams = (new URL(document.location)).searchParams;
   let commentLimit = pageParams.get("commentLimit");
+  
   const hiBound = 1000;
   if(!commentLimit || commentLimit.length == 0 || 
       !isWithinBounds(commentLimit, 0, hiBound)) {
     commentLimit = "5"; //reset to some default if malformed input
   }
+  
   //update the text box to display the amount after refresh 
   document.getElementById("commentLimit").value = parseInt(commentLimit);
   return commentLimit;

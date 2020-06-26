@@ -13,12 +13,12 @@
   <body>
     <div id="header"></div>
     <div id="splash-tiles"></div>
+    <form id="log-in-out">
+    </form>
     <div class="content">
       <form action="/data" method="POST">
-        <!-- <label for="comment-preface">Leave a comment!</label><br>
-        <!-- <input type="text" id="comment" name="comment"></input><br> --> 
         <textarea placeholder="Write your comment here" id="comment" name="comment"></textarea>
-        <input type="submit" class="submit"></input>
+        <input type="submit" class="submit" id="submit-comment"></input>
       </form>
       <form method="GET">
         <label for="commentLimit">Show this many comments:</label>
@@ -34,7 +34,6 @@
           <option value="upvoteCount false">Least popular</option>
         </select>
       </form>
-
       <div id="message-container"></div>
       <div id="more-comments"></div>
     </div>
@@ -42,6 +41,7 @@
   <script src="splashPage.js"></script>
   <script src="repeatedElements.js"></script>
   <script src="comments.js"></script>
+  <script src="login.js"></script>
   <script type="text/javascript">
     header();
   </script>

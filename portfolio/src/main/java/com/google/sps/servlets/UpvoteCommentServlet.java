@@ -36,7 +36,9 @@ import com.google.appengine.api.datastore.KeyFactory;
 
 import com.google.sps.data.Comment;
 
-/** Servlet responsible for deleting comments. */
+/*
+ * Servlet responsible for deleting comments. 
+ */
 @WebServlet("/upvote-comment")
 public class UpvoteCommentServlet extends HttpServlet {
 
@@ -54,8 +56,8 @@ public class UpvoteCommentServlet extends HttpServlet {
       datastore.put(upvotedComment);
     } catch (com.google.appengine.api.datastore.EntityNotFoundException enfe) {
       
-      //if comment doesn't exist don't upvote but print out the supposed ID...
-      System.out.println("failed to upvote comm ent with id" + id);
+      // if comment doesn't exist don't upvote but print out the supposed ID...
+      System.out.println("failed to upvote comm ent with id" + id + enfe);
     }
   }
 }
