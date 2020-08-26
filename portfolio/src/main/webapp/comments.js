@@ -95,6 +95,27 @@ function createMessageElements(comment) {
     deleteComment(comment, messageDiv);
   });
 
+  var upvoteAndButtonElements = document.createElement("div");
+  var upvoteElement = document.createElement("p");
+  var numUpvotes = comment.upvoteCount;
+  console.log(numUpvotes);
+  upvoteElement.innerText = numUpvotes.toString() + " upvotes";
+
+  var upvoteButtonElement = document.createElement("button");
+  upvoteButtonElement.innerText = "Upvote";
+  upvoteButtonElement.addEventListener('click', () => {
+    numUpvotes++;
+    upvoteElement.innerText = numUpvotes + " upvotes";
+    upvoteComment(comment);
+  });
+
+  upvoteAndButtonElements.appendChild(upvoteElement);
+  upvoteAndButtonElements.appendChild(upvoteButtonElement);
+  
+  messageDiv.appendChild(commentElement);
+  messageDiv.appendChild(upvoteAndButtonElements);
+  messageDiv.appendChild(deleteButtonElement);
+
   //make the upvote count element
   var upvoteCountParent = document.createElement("div");
   upvoteCountParent.className = "comment-button";
@@ -114,7 +135,6 @@ function createMessageElements(comment) {
     upvoteComment(comment);
   });
 
-  //make the delete button  
   const deleteButtonElement = document.createElement("button");
   deleteButtonElement.className = "comment-button";
   deleteButtonElement.innerText = "Delete comment";
@@ -130,6 +150,7 @@ function createMessageElements(comment) {
   
   messageDiv.appendChild(commentParent);
   messageDiv.appendChild(commentButtons);
+
   return messageDiv;
 }
 
@@ -161,6 +182,12 @@ function upvoteComment(comment) {
   fetch("/upvote-comment", {method: 'POST', body: params});
 }
 
+function upvoteComment(comment) {
+  const params = new URLSearchParams(); 
+  params.append('id', comment.id);
+  params.append('upvoteCount', comment.upvoteCount + 1)
+  fetch("/upvote-comment", {method: 'POST', body: params});
+}
 /**
  * Basic test to check well typed and apply some bounds
  */

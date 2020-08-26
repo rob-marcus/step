@@ -83,10 +83,12 @@ public class DataServlet extends HttpServlet {
       String comment = (String) entity.getProperty("comment");
       long timestamp = (long) entity.getProperty("timestamp");
       long upvoteCount = (long) entity.getProperty("upvoteCount");
+
       String userName = (String) entity.getProperty("userName");
       String userId = (String) entity.getProperty("userId");
       
       Comment newComment = new Comment(id, comment, timestamp, upvoteCount, userName, userId);
+
       comments.add(newComment);
     }
 
@@ -98,6 +100,7 @@ public class DataServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
     try {
       UserService userService = UserServiceFactory.getUserService();
       if (userService.isUserLoggedIn()) {

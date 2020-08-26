@@ -24,10 +24,9 @@ public final class Comment {
   private final String comment;
   private final long timestamp;
   private final long upvoteCount; 
-  private final String userName; 
-  private final String userId;
-  
-  public Comment(long id, String comment, long timestamp, long upvoteCount, String userName, String userId) {
+
+  public Comment(long id, String comment, long timestamp, long upvoteCount) {
+
     this.id = id;
     this.comment = comment;
     this.timestamp = timestamp;
