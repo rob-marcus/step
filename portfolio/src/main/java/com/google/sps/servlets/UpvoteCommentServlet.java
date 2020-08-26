@@ -34,44 +34,28 @@ import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 
-import com.google.appengine.api.users.UserService;
-import com.google.appengine.api.users.UserServiceFactory;
-
-
 import com.google.sps.data.Comment;
-import com.google.sps.data.UserInfo;
 
 /** Servlet responsible for deleting comments. */
-@WebServlet("/delete-comment")
-public class DeleteCommentServlet extends HttpServlet {
+@WebServlet("/upvote-comment")
+public class UpvoteCommentServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    response.setContentType("application/json");
     long id = Long.parseLong(request.getParameter("id"));
+    long upvotes = Long.parseLong(request.getParameter("upvoteCount"));
+
+    Key commentEntityKey = KeyFactory.createKey("Comment", id);
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    Key taskEntityKey = KeyFactory.createKey("Comment", id);
     
-    // Only delete a comment if the author is trying to delete it. 
     try {
-      String commentUserId = (String) datastore.get(taskEntityKey).getProperty("userId");
-
-      UserService userService = UserServiceFactory.getUserService();
-
-      if (userService.isUserLoggedIn()) {
-        String currentUserId = userService.getCurrentUser().getUserId();
-        if(currentUserId.equals(commentUserId)) {
-          datastore.delete(taskEntityKey);
-          response.setStatus(HttpServletResponse.SC_OK); // success (200)
-        } else {
-          response.setStatus(HttpServletResponse.SC_FORBIDDEN); // logged in but not author (403)
-        }
-      } else {
-        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // not logged in (401)
-      }
+      Entity upvotedComment = datastore.get(commentEntityKey);
+      upvotedComment.setProperty("upvoteCount", upvotes);
+      datastore.put(upvotedComment);
     } catch (com.google.appengine.api.datastore.EntityNotFoundException enfe) {
-      System.out.println("Failed to delete " + id + " possibly because it does not exist." + enfe);
-      response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+      
+      //if comment doesn't exist don't upvote but print out the supposed ID...
+      System.out.println("failed to upvote comment with id" + id);
     }
   }
 }

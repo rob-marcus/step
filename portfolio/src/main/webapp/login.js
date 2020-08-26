@@ -33,7 +33,8 @@ function toggleButtons(buttons, parityBool) {
  * responsive or not based on that. 
  */
 function checkLogin() {
-  fetch("/check-login").then(response => response.json()).then((userInfo) => {
+  fetch("/check-login").then(response => response.json()).then(userInfo => 
+  {
     const submitCommentButton = document.getElementById("submit-comment");
     const logInOutForm = document.getElementById("log-in-out");
     const logInOutButton = document.createElement("button");

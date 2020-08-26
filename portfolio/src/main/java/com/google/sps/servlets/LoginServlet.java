@@ -38,7 +38,7 @@ public class LoginServlet extends HttpServlet {
     UserInfo userInfo = new UserInfo();
     UserService userService = UserServiceFactory.getUserService();
 
-    //if logged in prepare log out response and such; else the opposite
+    // if logged in prepare log out response and such; else the opposite
     if (userService.isUserLoggedIn()) {
       String userEmail = userService.getCurrentUser().getEmail();
       String urlToRedirectToAfterUserLogsOut = "/index.html";
@@ -46,17 +46,16 @@ public class LoginServlet extends HttpServlet {
       
       userInfo.loggedIn = true;
       userInfo.logoutUrl = logoutUrl;
-      userInfo.email = userEmail;
+      userInfo.fullEmail = userEmail;
+      userInfo.userId = userService.getCurrentUser().getUserId();
     } else {
       String urlToRedirectToAfterUserLogsIn = "/index.html";
       String loginUrl = userService.createLoginURL(urlToRedirectToAfterUserLogsIn);
       userInfo.loggedIn = false;
       userInfo.loginUrl = loginUrl;
     }
-    
-    //GSON html-escapes by default so have to use this to bypass... 
-    Gson gson = new GsonBuilder().disableHtmlEscaping().create();
-    String json = gson.toJson(userInfo);
+
+    String json = new Gson().toJson(userInfo);
     response.getWriter().println(json);
   }
 }
