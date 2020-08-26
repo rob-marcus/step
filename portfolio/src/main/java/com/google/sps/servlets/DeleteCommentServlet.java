@@ -39,6 +39,7 @@ import com.google.appengine.api.users.UserServiceFactory;
 
 
 import com.google.sps.data.Comment;
+import com.google.sps.data.UserInfo;
 
 /** Servlet responsible for deleting comments. */
 @WebServlet("/delete-comment")
@@ -47,7 +48,6 @@ public class DeleteCommentServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     response.setContentType("application/json");
-
     long id = Long.parseLong(request.getParameter("id"));
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     Key taskEntityKey = KeyFactory.createKey("Comment", id);

@@ -37,6 +37,7 @@ import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 
 import com.google.sps.data.Comment;
+import com.google.sps.data.UserInfo;
 
 import org.apache.commons.lang3.BooleanUtils; 
 
@@ -46,6 +47,7 @@ public class DataServlet extends HttpServlet {
   
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
     int defaultCommentLimit = 5;
     int commentLimit = getPositiveInputOrDefault(request, "commentLimit", defaultCommentLimit);
 
@@ -56,6 +58,11 @@ public class DataServlet extends HttpServlet {
     String sortFeature = getSortFeature(request, "sortFeature"); 
 
     Boolean sortDescending = getBoolInputOrDefault(request, "sortDirection", true);
+    Boolean sortDescending = Boolean.parseBoolean
+                                    (getParameterOrDefault(request, "sortDirection", "true"));
+                                     
+    Query query = new Query("Comment");
+
     
     Query query = new Query("Comment");
 
@@ -100,7 +107,6 @@ public class DataServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
     try {
       UserService userService = UserServiceFactory.getUserService();
       if (userService.isUserLoggedIn()) {

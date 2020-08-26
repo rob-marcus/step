@@ -13,18 +13,18 @@
 // limitations under the License.
 
 /**
- * Set a button to be disabled or not disabled
+ * Toggle a button to be disabled or not disabled
  */
-function setButtonDisabled(button, isDisabled) {
-  button.disabled = isDisabled;
+function toggleButton(button, parityBool) {
+  button.disabled = parityBool;
 }
 
 /**
- * Do setButtonDisabled for all buttons in a class
+ * Do toggleButton for all buttons in a class
  */
-function setButtonsDisabled(buttons, isDisabled) {
+function toggleButtons(buttons, parityBool) {
   for (var buttonIndex = 0; buttonIndex < buttons.length; buttonIndex++) {
-    setButtonDisabled(buttons.item(buttonIndex), isDisabled);
+    toggleButton(buttons.item(buttonIndex), parityBool);
   }
 }
 
@@ -42,17 +42,17 @@ function checkLogin() {
 
     const deleteButtons = document.getElementsByClassName("delete-button");
     if (userInfo.loggedIn) {
-      setButtonDisabled(submitCommentButton, false);
-      setButtonsDisabled(deleteButtons, false);
+      toggleButton(submitCommentButton, false);
+      toggleButtons(deleteButtons, false);
 
       logInOutButton.innerText = "Log Out"; 
-      logInOutForm.action = unescape(userInfo.logoutUrl);
+      logInOutForm.action = userInfo.logoutUrl;
     } else {
-      setButtonDisabled(submitCommentButton, true);
-      setButtonsDisabled(deleteButtons, true);
+      toggleButton(submitCommentButton, true);
+      toggleButtons(deleteButtons, true);
 
       logInOutButton.innerText = "Log In"; 
-      logInOutForm.action = unescape(userInfo.loginUrl);
+      logInOutForm.action = userInfo.loginUrl;
     }
   })
 }

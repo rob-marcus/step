@@ -158,6 +158,13 @@ function deleteComment(comment, messageDiv) {
   const params = new URLSearchParams();
   params.append('id', comment.id);
   fetch('/delete-comment', {method: 'POST', body: params})
+  .then(response => response.json())
+  .then(userInfo => 
+  {
+    if (userInfo.loggedIn) {
+      messageDiv.remove(); //delete only possible with log in 
+    } else {
+      window.location = userInfo.loginUrl;
   .then(response => 
   {
     var status = response.status;
@@ -199,7 +206,7 @@ function isWithinBounds(number, lo, hi) {
 function getCommentLimit() {
   let pageParams = (new URL(document.location)).searchParams;
   let commentLimit = pageParams.get("commentLimit");
-  
+
   const hiBound = 1000;
   if(!commentLimit || commentLimit.length == 0 || 
       !isWithinBounds(commentLimit, 0, hiBound)) {
@@ -210,6 +217,12 @@ function getCommentLimit() {
   document.getElementById("commentLimit").value = parseInt(commentLimit);
   return commentLimit;
 }
+
+function getSortDirection() {
+  var sortDirectionOptions = document.getElementById("sortDirection");
+
+  var sortDirection = 
+      sortDirectionOptions.options[sortDirectionOptions.selectedIndex].value;
 
 function getSortMethod() {
   var sortMethodOptions = document.getElementById("sortMethod");

@@ -13,30 +13,29 @@
   <body>
     <div id="header"></div>
     <div id="splash-tiles"></div>
-    <div class="content">
-      <form action="/data" method="POST">
-        <!-- <label for="comment-preface">Leave a comment!</label><br>
-        <!-- <input type="text" id="comment" name="comment"></input><br> --> 
-        <textarea placeholder="Write your comment here" id="comment" name="comment"></textarea>
-        <input type="submit" class="submit"></input>
+      <form id="log-in-out">
       </form>
-      <form method="GET">
-        <label for="commentLimit">Show this many comments:</label>
-        <input type="number" name="commentLimit" id="commentLimit" min=1 step=1></input>
-        <input type="submit" class="submit" value="Show"></input>
-      </form>
-      <form>
-        <label for="sortMethod">Sort:</label>
-        <select id="sortMethod" onchange="applySortMethod()">
-          <option value="timestamp true" selected="selected">Time (newest)</option>
-          <option value="timestamp false">Time (oldest)</option>
-          <option value="upvoteCount true">Most popular</option>
-          <option value="upvoteCount false">Least popular</option>
-        </select>
-      </form>
-      <div id="message-container"></div>
-      <div id="comments"></div>
-    </div>
+    <form action="/data" method="POST">
+      <label for="comment-preface">Leave a comment!</label><br>
+      <input type="text" id="comment" name="comment"></input><br> 
+      <input type="submit" class="submit" id="submit-comment"></input>
+    </form>
+    <form id="/numberComments" method="GET">
+      <label for="commentLimit">Show this many comments:</label>
+      <input type="number" name="commentLimit" id="commentLimit" min=1 step=1></input>
+      <input type="submit" class="submit" value="Show"></input>
+    </form>
+    <form id="sortComments">
+      <label for="sortDirection">Sort:</label>
+      <select id="sortDirection" onchange="applySortDirection()">
+        <option value="true" selected>Time (newest)</option>
+        <option value="false">Time (oldest)</option>
+      </select>
+    </form>
+
+
+    <div id="message-container"></div>
+    <div id="comments"></div>
     <div id="footer"></div>
   <script src="splashPage.js"></script>
   <script src="repeatedElements.js"></script>

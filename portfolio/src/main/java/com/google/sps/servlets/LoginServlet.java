@@ -48,13 +48,13 @@ public class LoginServlet extends HttpServlet {
       userInfo.logoutUrl = logoutUrl;
       userInfo.fullEmail = userEmail;
       userInfo.userId = userService.getCurrentUser().getUserId();
-  
     } else {
       String urlToRedirectToAfterUserLogsIn = "/index.html";
       String loginUrl = userService.createLoginURL(urlToRedirectToAfterUserLogsIn);
       userInfo.loggedIn = false;
       userInfo.loginUrl = loginUrl;
     }
+
     String json = new Gson().toJson(userInfo);
     response.getWriter().println(json);
   }
