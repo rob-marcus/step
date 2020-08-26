@@ -55,7 +55,7 @@ public class UpvoteCommentServlet extends HttpServlet {
     } catch (com.google.appengine.api.datastore.EntityNotFoundException enfe) {
       
       //if comment doesn't exist don't upvote but print out the supposed ID...
-      System.out.println("failed to upvote comm ent with id" + id);
+      System.out.println("failed to upvote comment with id" + id);
     }
   }
 }

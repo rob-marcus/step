@@ -33,9 +33,13 @@ import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.QueryResultList;
 
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
+
 import com.google.sps.data.Comment;
 
 import org.apache.commons.lang3.BooleanUtils; 
+
 
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
@@ -79,8 +83,12 @@ public class DataServlet extends HttpServlet {
       String comment = (String) entity.getProperty("comment");
       long timestamp = (long) entity.getProperty("timestamp");
       long upvoteCount = (long) entity.getProperty("upvoteCount");
+
+      String userName = (String) entity.getProperty("userName");
+      String userId = (String) entity.getProperty("userId");
       
-      Comment newComment = new Comment(id, comment, timestamp, upvoteCount);
+      Comment newComment = new Comment(id, comment, timestamp, upvoteCount, userName, userId);
+
       comments.add(newComment);
     }
 
@@ -92,19 +100,41 @@ public class DataServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    String comment = getParameterOrDefault(request, "comment", /*default comment value=*/"");
-    long timestamp = System.currentTimeMillis();
-    long upvoteCount = Long.valueOf(1);
-    
-    Entity commentEntity = new Entity("Comment");
-    commentEntity.setProperty("comment", comment);
-    commentEntity.setProperty("timestamp", timestamp);
-    commentEntity.setProperty("upvoteCount", upvoteCount);
-    
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    datastore.put(commentEntity);
 
-    response.sendRedirect("/index.html");
+    try {
+      UserService userService = UserServiceFactory.getUserService();
+      if (userService.isUserLoggedIn()) {
+        String comment = 
+            getParameterOrDefault(request, "comment", /* defaultValue = */ "");
+        
+        long timestamp = System.currentTimeMillis();
+        
+        String[] emailSplit = userService.getCurrentUser().toString().split("@");
+        String userName = emailSplit[0];
+
+        String userId = userService.getCurrentUser().getUserId();
+
+        Entity commentEntity = new Entity("Comment");
+        commentEntity.setProperty("comment", comment);
+        commentEntity.setProperty("timestamp", timestamp);
+        commentEntity.setProperty("upvoteCount", Long.valueOf(1));
+        commentEntity.setProperty("userName", userName);
+        commentEntity.setProperty("userId", userId);
+
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        datastore.put(commentEntity);
+
+        response.sendRedirect("/index.html");
+      } else {
+        String urlToRedirectToAfterUserLogsIn = "index.html";
+        String loginUrl = userService.createLoginURL(urlToRedirectToAfterUserLogsIn);
+        
+        response.sendRedirect(loginUrl);
+      }
+    } catch (Exception e) {
+      response.sendError(HttpServletResponse.SC_NOT_FOUND, 
+          "Something weird happened with the java data servlet! Oops");
+    }
   }
 
   /*
@@ -139,7 +169,7 @@ public class DataServlet extends HttpServlet {
   private int getPositiveInputOrDefault(HttpServletRequest request, String name, int defaultValue) {
     int value = getIntInputOrDefault(request, name, defaultValue);
     if (value < 1) {
-      //additional guarantee that defaultValue is also positive...
+      // additional guarantee that defaultValue is also positive...
       return defaultValue > 0 ? defaultValue : 1;
     }
     return value;
@@ -157,6 +187,7 @@ public class DataServlet extends HttpServlet {
       return defaultValue;
     }
   }
+
 
   /* 
    * Returns a boolean in the url parameter, or defaultValue if not present

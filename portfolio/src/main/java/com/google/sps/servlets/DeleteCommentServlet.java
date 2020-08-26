@@ -34,6 +34,10 @@ import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
+
+
 import com.google.sps.data.Comment;
 
 /** Servlet responsible for deleting comments. */
@@ -42,10 +46,32 @@ public class DeleteCommentServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    long id = Long.parseLong(request.getParameter("id"));
+    response.setContentType("application/json");
 
-    Key taskEntityKey = KeyFactory.createKey("Comment", id);
+    long id = Long.parseLong(request.getParameter("id"));
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    datastore.delete(taskEntityKey);
+    Key taskEntityKey = KeyFactory.createKey("Comment", id);
+    
+    // Only delete a comment if the author is trying to delete it. 
+    try {
+      String commentUserId = (String) datastore.get(taskEntityKey).getProperty("userId");
+
+      UserService userService = UserServiceFactory.getUserService();
+
+      if (userService.isUserLoggedIn()) {
+        String currentUserId = userService.getCurrentUser().getUserId();
+        if(currentUserId.equals(commentUserId)) {
+          datastore.delete(taskEntityKey);
+          response.setStatus(HttpServletResponse.SC_OK); // success (200)
+        } else {
+          response.setStatus(HttpServletResponse.SC_FORBIDDEN); // logged in but not author (403)
+        }
+      } else {
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // not logged in (401)
+      }
+    } catch (com.google.appengine.api.datastore.EntityNotFoundException enfe) {
+      System.out.println("Failed to delete " + id + " possibly because it does not exist." + enfe);
+      response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+    }
   }
 }
